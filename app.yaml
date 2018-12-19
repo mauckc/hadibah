@@ -1,0 +1,5 @@
+runtime: python
+env: standard
+entrypoint: cd ./hadibah/ && gunicorn -b :$PORT -c config.py main:app
+runtime_config:
+  python_version: 3
