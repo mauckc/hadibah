@@ -158,14 +158,14 @@ def table_convert(fmt="csv"):
     """
     # others netcdf, fits?
     # https://pandas.pydata.org/pandas-docs/stable/io.html
-    if fmt not in ['tsv', 'csv', 'hdf']:
+    if fmt not in ['tsv', 'csv', 'hdf','xls']:
         raise NotImplementedError("Conversion format to {} not available.".format(fmt))
-    name = "data/sweet-cat.{}".format(fmt)
+    name = "data/animals.{}".format(fmt)
     if fmt is "tsv":  # This is the standard
         pass
     else:
-        df = pd.read_table('data/sweet-cat.tsv')
+        df = pd.read_table('data/animals.tsv')
         if fmt == "hdf":
-            df.to_hdf(name, key="sweetcat", mode="w", format='table')
+            df.to_hdf(name, key="animals", mode="w", format='table')
         elif fmt == "csv":
             df.to_csv(name, sep=",", index=False)

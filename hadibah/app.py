@@ -192,7 +192,7 @@ def error_404(error):
 
 @app.route('/download/<path:fname>')
 def download(fname):
-    """Download SWEET-Cat table in different formats and clean afterwards"""
+    """Download data table in different formats and clean afterwards"""
     if 'username' in session:
         if fname.startswith('animals'):
             print(fname)
