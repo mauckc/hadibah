@@ -51,7 +51,7 @@ def readSC(nrows=None):
 
         df = pd.read_excel('./data/animals.xls')
         df.to_csv('./data/animals.tsv',sep='\t')
-        
+
         df = pd.read_table('./data/animals.tsv')
         preprocess_shape = df.shape
         print(preprocess_shape)
@@ -151,3 +151,21 @@ def readSC(nrows=None):
             return df.loc[:nrows-1, :], plot_columns
 
     return df, plot_columns
+
+def table_convert(fmt="csv"):
+    """Convert the SC data into different formats.
+    To make available for download.
+    """
+    # others netcdf, fits?
+    # https://pandas.pydata.org/pandas-docs/stable/io.html
+    if fmt not in ['tsv', 'csv', 'hdf']:
+        raise NotImplementedError("Conversion format to {} not available.".format(fmt))
+    name = "data/sweet-cat.{}".format(fmt)
+    if fmt is "tsv":  # This is the standard
+        pass
+    else:
+        df = pd.read_table('data/sweet-cat.tsv')
+        if fmt == "hdf":
+            df.to_hdf(name, key="sweetcat", mode="w", format='table')
+        elif fmt == "csv":
+            df.to_csv(name, sep=",", index=False)
