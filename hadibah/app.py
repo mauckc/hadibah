@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, url_for, redirect, send_from_
 import os
 import json
 from utils import readSC, colors, table_convert
-from plots import plot_page_mpld3, plot_page_counts, plot_page_los, plot_page_inventory
+from plots import plot_page_mpld3, plot_page_counts, plot_page_los, plot_page_inventory, detail_plot
 
 import sqlite3
 from werkzeug.utils import secure_filename
@@ -29,6 +29,7 @@ UPLOAD_FOLDER = 'uploads/'
 ALLOWED_EXTENSIONS = set(['csv','xls','txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+# I assume this is number of bits bytes in 1 Gigabyte
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 if not os.path.exists('uploads'):
@@ -112,7 +113,35 @@ def homepage():
     else:
         return redirect(url_for("login"))
 
+@app.route('/animal_id/<string:animal_id>/')
+def animal_iddetail(animal_id=None):
+    """Page with details on the individual system"""
+    if animal_id:
+        df, _ = readSC()
+        t1, t2 = min(df['intake_date']), max(df['outcome_date'])
+        index = df['animal_id'] == animal_id
+        d = df.loc[index, :].copy()
+        if len(d):
+            show_intake = bool(~d['los'].isnull().values[0])
+            # if show_intake:
+            #     s = d['los'].values
+            #     s = [si.decode() if isinstance(si, bytes) else si for si in s]
+            #     s = ['{} {}'.format(si[:-2], si[-1].lower()) for si in s]
+                #d['exolink'] = ['http://exointake.eu/catalog/{}/'.format(si.lower().replace(' ', '_')) for si in s]
 
+            # d['lum'] = (d.teff/5777)**4 * (d.mass/((10**d.logg)/(10**4.44)))**2
+            # d['hz1'] = round(hz(d['teff'].values[0], d['lum'].values[0], model=2), 5)
+            # d['hz2'] = round(hz(d['teff'].values[0], d['lum'].values[0], model=4), 5)
+
+            if len(d) == sum(d['intake_date'].isnull()):
+                plot = None
+            else:
+                plot = detail_plot(d, t1, t2)
+            d.fillna('...', inplace=True)
+            info = d.to_dict('records')
+
+            return render_template('detail.html', info=info, show_intake=show_intake, plot=plot)
+    return redirect(url_for('homepage'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -156,15 +185,7 @@ def upload_file():
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                 return redirect(url_for('upload_file',
                                         filename=filename))
-        return '''
-        <!doctype html>
-        <title>Upload new File</title>
-        <h1>Herler! Upload new File</h1>
-        <form method=post enctype=multipart/form-data>
-          <input type=file name=file>
-          <input type=submit value=Upload>
-        </form>
-        '''
+        return render_template('upload.html')
     else:
         return redirect(url_for("login"))
 
@@ -262,12 +283,34 @@ def counts_plot():
     else:
         return redirect(url_for('login'))
 
+@app.route('/counts-filter/',methods=['GET','POST'])
+def counts_plot_filter():
+    if 'username' in session:
+        field = request.args.get('field')
+        value = request.args.get('value')
+        df, columns = readSC()
+        filterdf = df[df[str(field)] == value]
+        return plot_page_counts(filterdf, columns, request, field=field, value=value)
+    else:
+        return redirect(url_for('login'))
+
 @app.route("/length-of-stay/", methods=['GET', 'POST'])
-def length_of_stay_plot():
+def los_plot():
     """Plot inventory over time"""
     if 'username' in session:
         df, columns = readSC()
         return plot_page_los(df, columns, request)
+    else:
+        return redirect(url_for('login'))
+
+@app.route('/length-of-stay-filter/',methods=['GET','POST'])
+def los_plot_filter():
+    if 'username' in session:
+        field = request.args.get('field')
+        value = request.args.get('value')
+        df, columns = readSC()
+        filterdf = df[df[str(field)] == value]
+        return plot_page_los(filterdf, columns, request, field=field, value=value)
     else:
         return redirect(url_for('login'))
 
@@ -279,7 +322,6 @@ def inventory_plot():
         return plot_page_inventory(df, columns, request)
     else:
         return redirect(url_for('login'))
-
 
 @app.route('/inventory-filter/',methods=['GET','POST'])
 def inventory_plot_filter():
@@ -293,7 +335,3 @@ def inventory_plot_filter():
         return plot_page_inventory(filterdf, columns, request, field=field, value=value)
     else:
         return redirect(url_for('login'))
-
-# if __name__ == '__main__':
-#     port = int(os.environ.get('PORT', 5000))  # pragma: no cover
-#     app.run(host='0.0.0.0', port=port, debug=False)  # pragma: no cover

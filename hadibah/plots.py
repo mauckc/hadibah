@@ -13,29 +13,40 @@ import numpy as np
 import pandas as pd
 # from utils import colors, get_default, planetary_radius
 
+from utils import get_default
 import matplotlib.cm as cm
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt; plt.rcdefaults()
 from mpld3 import fig_to_html, plugins
 import time
 
+ss_intake = {
+    'Mercury': [0.39, 4878],
+    'Venus': [0.723, 12104],
+    'Earth': [1, 12756],
+    'Mars': [1.524, 6787],
+    'Jupiter': [5.203, 142796],
+    'Saturn': [9.539, 120660],
+    'Uranus': [19.18, 51118],
+    'Neptune': [30.06, 48600],
+    'Pluto': [39.53, 2274]}
 
 colorschemes = {'Viridis': [Viridis11, 'Viridis256'],
                 'Inferno': [Inferno11, 'Inferno256'],
                 'Plasma':  [Plasma11,  'Plasma256']}
 
-def barchart_counts( dataf , n ):
-    cnts = dataf[headers[n]].value_counts()[0:8]
-    keys = [ cnts.keys()[i] for i in xrange(0,len(cnts.keys())) ]
+def barchart_counts( dataf, headers, n, numvals=16):
+    cnts = dataf[headers[n]].value_counts()[0:numvals]
+    keys = [ cnts.keys()[i] for i in range(0,len(cnts.keys())) ]
     y_pos = np.arange(len(keys))
     vals = cnts.values
+    fig = plt.figure(figsize=(14,8))
     plt.bar(y_pos, vals, align='center', alpha=0.5)
     plt.xticks(y_pos, keys)
     plt.ylabel('Counts')
     plt.title(headers[n] + ' breakdown')
-
-    plt.show()
-    return
-
+    plt.grid()
+    # plot = fig_to_html(fig)
+    return fig
 
 def getdailyinventory( day, dataf ):
     dayinventory = dataf[(dataf.intake_date <= day) & (dataf.outcome_date > day)]
@@ -54,19 +65,66 @@ def getdailyinventory( day, dataf ):
 #     print oneday, numdays
 #     return #dayinventory
 
+def detail_plot(df, tlow, thigh):
 
-# Name: [distance (AU), diameter (km)]
-# From http://www.enchantedlearning.com/subjects/astronomy/planets/
-# ss_planets = {
-#     'Mercury': [0.39, 4878],
-#     'Venus': [0.723, 12104],
-#     'Earth': [1, 12756],
-#     'Mars': [1.524, 6787],
-#     'Jupiter': [5.203, 142796],
-#     'Saturn': [9.539, 120660],
-#     'Uranus': [19.18, 51118],
-#     'Neptune': [30.06, 48600],
-#     'Pluto': [39.53, 2274]}
+    hz1 = get_default(df['intake_date'].values[0], -2, float)
+    hz2 = get_default(df['outcome_date'].values[0], -1, float)
+    color = get_default(df['los'].values[0], 5777, float)
+    tlow = get_default(max(2500, tlow), 2500, int)
+    thigh = get_default(min(8500, thigh), 8500, int)
+
+    R = df.iloc[0]['los']
+    r = [ ri for  ri in df.loc[:, ['los']].values]
+    LOSs = df['los'].values
+    max_LOSs = max([losi for losi in LOSs if isinstance(losi, (int, float)) and not np.isnan(losi)])
+    Rs = max(500, 500*R)
+    rs = [max(80, 30*ri) for ri in r]
+
+    fig, ax = plt.subplots(1, figsize=(14, 2))
+    ax.scatter([0], [1], s=Rs, c=[color], vmin=tlow, vmax=thigh, cmap=cm.autumn)
+    no_los = []
+
+    if 0 < hz1 < hz2:
+        x = np.linspace(hz1, hz2, 10)
+        y = np.linspace(0.9, 1.1, 10)
+        z = np.array([[xi]*10 for xi in x[::-1]]).T
+        plt.contourf(x, y, z, 300, alpha=0.8, cmap=cm.summer)
+
+    for i, los in enumerate(LOSs):
+        if np.isnan(los):
+            no_los.append('{} has no LOS'.format(df['plName'].values[i]))
+            continue
+        if los < hz1:
+            dist = hz1-los
+            ax.scatter(los, [1], s=rs[i], c=[dist], vmin=0, vmax=hz1, cmap=cm.autumn)
+        elif hz1 <= los <= hz2:
+            ax.scatter(los, [1], s=rs[i], c='k', alpha=0.8)
+        else:
+            dist = los-hz2
+            ax.scatter(los, [1], s=rs[i], c=[dist], vmin=hz2, vmax=max_LOSs, cmap=cm.winter_r)
+
+    for intake in ss_intake.keys():
+        s = ss_intake[intake][0]
+        r = 30*ss_intake[intake][1]/2.
+        r /= float(ss_intake['Jupiter'][1])
+        ax.scatter(s, [0.95], s=r*10, c='g')
+        ax.text(s-0.01, 0.97, intake, color='white')
+
+    ax.set_xlim(0.0, max_LOSs*1.2)
+    ax.set_ylim(0.9, 1.1)
+    ax.set_xlabel('Date')
+    ax.yaxis.set_major_formatter(plt.NullFormatter())
+    ax.set_yticks([])
+    ax.spines['left'].set_visible(False)
+    ax.set_facecolor('black')
+    plt.tight_layout()
+
+    for i, text in enumerate(no_los):
+        ax.text(max_LOSs*0.8, 1.05-i*0.02, text, color='white')
+
+    return fig_to_html(fig)
+
+
 
 def plot_page_mpld3(df, columns, request, field=None, value=None):
     if request.method == 'POST':  # Something is being submitted
@@ -84,10 +142,10 @@ def plot_page_mpld3(df, columns, request, field=None, value=None):
     if field and value is None:
         field = 'all fields'
         value = 'all values'
-    
+
     # Does not work with NaN values! so we must remove rows with NaN values
     df = df.loc[:, {x1, x2, y1, y2, z}].dropna(axis=0)
-    
+
     fig, ax = plt.subplots(2, 2, figsize=(14, 8), sharex='col', sharey='row')
     points = ax[0, 0].scatter(df[x1], df[y1], c=df[z], alpha=0.6)
     points = ax[1, 0].scatter(df[x1], df[y2], c=df[z], alpha=0.6)
@@ -112,7 +170,7 @@ def plot_page_mpld3(df, columns, request, field=None, value=None):
             tk.set_visible(True)
         for tk in axe.get_xticklabels():
             tk.set_visible(True)
-    
+
     ax[0, 0].grid(color='grey', linestyle='-', linewidth=2)
     ax[0, 1].grid(color='grey', linestyle='-', linewidth=2)
     ax[1, 0].grid(color='grey', linestyle='-', linewidth=2)
@@ -122,80 +180,71 @@ def plot_page_mpld3(df, columns, request, field=None, value=None):
     return render_template('plot_mpld3.html', plot=plot, columns=columns,
                            x1=x1, x2=x2, y1=y1, y2=y2, z=z)
 
-def plot_page_counts(df, columns, request):
+def plot_page_counts(df, columns, request, field=None, value=None):
     if request.method == 'POST':  # Something is being submitted
-        x1 = str(request.form['x1'])
-        x2 = str(request.form['x2'])
-        y1 = str(request.form['y1'])
-        y2 = str(request.form['y2'])
         z = str(request.form['z'])
-        for requested_col in {x1, x2, y1, y2, z}:
+        for requested_col in {z}:
             if requested_col not in columns:
-                return redirect(url_for('sd'))
+                return redirect(url_for('counts_plot'))
     else:
-        x1, x2, y1, y2, z = 'weight', 'los', 'los', 'age_s_n_date', 'days_old'
+        z = 'intake_type'
     # Does not work with NaN values!
-    df = df.loc[:, {x1, x2, y1, y2, z}].dropna(axis=0)
+    df = df.loc[:, {z}].dropna(axis=0)
     # print(df.head())
-    fig, ax = plt.subplots(2, 2, figsize=(14, 8), sharex='col', sharey='row')
-    points = ax[0, 0].scatter(df[x1], df[y1], c=df[z], alpha=0.6)
-    points = ax[1, 0].scatter(df[x1], df[y2], c=df[z], alpha=0.6)
-    points = ax[0, 1].scatter(df[x2], df[y1], c=df[z], alpha=0.6)
-    points = ax[1, 1].scatter(df[x2], df[y2], c=df[z], alpha=0.6)
-    # ax[1, 0].set_title('Filtered by {} of {}'.format(field, value))
-    # ax[1, 1].set_title('Filtered by {} of {}'.format(field, value))
-    # ax[0, 0].set_title('Filtered by {} of {}'.format(field, value))
-    # ax[0, 1].set_title('Filtered by {} of {}'.format(field, value))
+    field_index = 2
+    for i, col in enumerate(columns):
+        if col == z:
+            field_index = i
+        else:
+            pass
 
-    ax[1, 0].set_xlabel(x1)
-    ax[1, 1].set_xlabel(x2)
-    ax[0, 0].set_ylabel(y1)
-    ax[1, 0].set_ylabel(y2)
+    fig = barchart_counts(df, columns, field_index)
 
-
-    plugins.connect(fig, plugins.LinkedBrush(points))
     plot = fig_to_html(fig)
     return render_template('plot_counts.html', plot=plot, columns=columns,
-                           x1=x1, x2=x2, y1=y1, y2=y2, z=z)
+                           z=z)
 
-def plot_page_los(df, columns, request):
+def plot_page_los(df, columns, request, field=None, value=None):
     if request.method == 'POST':  # Something is being submitted
-        x1 = str(request.form['x1'])
-        x2 = str(request.form['x2'])
-        y1 = str(request.form['y1'])
-        y2 = str(request.form['y2'])
         z = str(request.form['z'])
-        for requested_col in {x1, x2, y1, y2, z}:
+        for requested_col in {z}:
             if requested_col not in columns:
-                return redirect(url_for('sd'))
+                return redirect(url_for('los_plot'))
     else:
-        x1, x2, y1, y2, z = 'weight', 'los', 'los', 'age_s_n_date', 'days_old'
+        z = 'los'
     # Does not work with NaN values!
-    df = df.loc[:, {x1, x2, y1, y2, z}].dropna(axis=0)
-    # print(df.head())
-    fig, ax = plt.subplots(2, 2, figsize=(14, 8), sharex='col', sharey='row')
-    points = ax[0, 0].scatter(df[x1], df[y1], c=df[z], alpha=0.6)
-    points = ax[1, 0].scatter(df[x1], df[y2], c=df[z], alpha=0.6)
-    points = ax[0, 1].scatter(df[x2], df[y1], c=df[z], alpha=0.6)
-    points = ax[1, 1].scatter(df[x2], df[y2], c=df[z], alpha=0.6)
-    ax[1, 0].set_xlabel(x1)
-    ax[1, 0].set_ylabel(y2)
-    ax[1, 1].set_xlabel(x2)
-    ax[1, 1].set_ylabel(y2)
-    ax[0, 0].set_ylabel(y1)
-    ax[0, 0].set_xlabel(x1)
-    ax[1, 0].set_ylabel(y2)
-    ax[1, 0].set_xlabel(x1)
-    ax[1, 1].set_ylabel(y2)
-    ax[1, 1].set_xlabel(x2)
-    ax[0, 0].grid(color='black', linestyle='-', linewidth=2)
-    ax[0, 1].grid(color='black', linestyle='-', linewidth=2)
-    ax[1, 0].grid(color='black', linestyle='-', linewidth=2)
-    ax[1, 1].grid(color='black', linestyle='-', linewidth=2)
-    plugins.connect(fig, plugins.LinkedBrush(points))
+    df = df.loc[:, {z}].dropna(axis=0)
+
+
+    fig = plt.figure(figsize=(14,8))
+    # An "interface" to matplotlib.axes.Axes.hist() method
+    n, bins, patches = plt.hist(x=df[z], bins='auto', color='#0504aa',
+                                alpha=0.7, rwidth=0.85)
+
+    plt.grid(axis='y', alpha=0.75)
+    plt.xlabel('Length of Stay')
+    plt.ylabel('Frequency Count')
+    plt.title('Length of Stay')
+    plt.text(43, 90, r'$\mu=15, b=3$')
+    plt.xlim((0,100))
+    maxfreq = n.max()
+    # Set a clean upper y-axis limit.
+    plt.ylim(ymax=np.ceil(maxfreq / 10) * 10 if maxfreq % 10 else maxfreq + 10)
+
+    field_index = 27
+    print(columns)
+    for i, col in enumerate(columns):
+        if col == z:
+            field_index = i
+        else:
+            pass
+
+    # fig = barchart_counts(df, columns, field_index)
+
     plot = fig_to_html(fig)
     return render_template('plot_los.html', plot=plot, columns=columns,
-                           x1=x1, x2=x2, y1=y1, y2=y2, z=z)
+                           z=z)
+
 
 def plot_page_inventory(df, columns, request, field=None, value=None):
     if request.method == 'POST':  # Something is being submitted
@@ -210,7 +259,7 @@ def plot_page_inventory(df, columns, request, field=None, value=None):
     if field and value is None:
         field = 'all fields'
         value = 'all values'
-    
+
     nowtime = time.time()
     # current headers are:
     headers = list(df.columns.values)

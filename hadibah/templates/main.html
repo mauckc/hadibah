@@ -9,8 +9,8 @@
     var data = [];
     {% for row in rows %}
         data.push([
+          unescape('<a target="_blank" href="/animal_id/{{ row['animal_id'] }}"><b>{{ row['animal_id'] }}</b></a>'),
           "{{ row['impound_no']}}",
-          "{{ row['animal_id'] }}",
           "{{ row['animal_type'] }}",
           "{{ row['intake_type'] }}",
           "{{ row['intake_subtype'] }}",
@@ -78,8 +78,9 @@
   <table id="sc-table" class="table table-hover table-responsive">
     <thead>
       <tr>
-        <th><label title="impound no">impound_no</label></th>
+
         <th><label title="animal id">animal_id</label></th>
+        <th><label title="impound no">impound_no</label></th>
         <th><label title="animal type">animal_type</label></th>
         <th><label title="intake type">intake_type</label></th>
         <th><label title="intake subtype">intake_subtype</label></th>

@@ -32,7 +32,7 @@ def readSC(nrows=None):
     plot_columns = cache.get('animalCols')
 
     if (df is None) or (plot_columns is None):
-        plot_columns = ['los', 'weight','los_1','age_s_n_date','days_old']
+        plot_columns = ['index','animal_id','animal_type','sex','primary_bree','dob','secondary_','kennel_no','impound_no','intake_type','intake_subtype','intake_date','s_n_date','intake_cond','weight','weight_1_week','outcome_type','outcome_subtype','outcome_date','due_out_date','outcome_cond','location_1','location_1_date','location_2','location_2_date','behavior_cond','outcome_behavior_cond','euth_reason','intake_date_form_2']
         if not os.path.exists('./data/animals.tsv'):
             print("[INFO]: animals.tsv does not exist...\n[INFO]: looking for other file extensions...")
             if os.path.exists('data/animal.xls'):
@@ -150,6 +150,8 @@ def readSC(nrows=None):
         if nrows is not None:
             return df.loc[:nrows-1, :], plot_columns
 
+    plot_columns = df.columns
+
     return df, plot_columns
 
 def table_convert(fmt="csv"):
@@ -169,3 +171,9 @@ def table_convert(fmt="csv"):
             df.to_hdf(name, key="animals", mode="w", format='table')
         elif fmt == "csv":
             df.to_csv(name, sep=",", index=False)
+
+def get_default(value, default, dtype, na_value='...'):
+    if isinstance(value, dtype) and (value != na_value):
+        return value
+    else:
+        return default

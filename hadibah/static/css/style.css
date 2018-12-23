@@ -9,7 +9,7 @@ body{
 }
 
 #particles{
-  background:#f8f8f8; /*#edfffc #f8f8f8*/
+  background:#fec09f;
   height: 80px;
   width: 100%;
   opacity: 0.9;
@@ -28,7 +28,7 @@ hr {
   margin-bottom: 0.5em;
   border-style: solid;
   border-width: 2px;
-  color: #e7e7e7;
+  color: #f3edff;
 }
 
 .wrapper {
