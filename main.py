@@ -118,7 +118,8 @@ def animal_iddetail(animal_id=None):
     """Page with details on the individual system"""
     if animal_id:
         df, _ = readSC()
-        t1, t2 = min(df['intake_date']), max(df['outcome_date'])
+        # t1, t2 = min(df['intake_date']), max(df['outcome_date'])
+        t1, t2 = min(df['los']), max(df['los'])
         index = df['animal_id'] == animal_id
         d = df.loc[index, :].copy()
         if len(d):
