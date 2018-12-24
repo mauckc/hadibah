@@ -1,7 +1,7 @@
 # hadibah
 animal data visualization
 
-[Hadibah](www.hadibah.com)
+[Hadibah](http://www.hadibah.com)
 
 ## Setup
 
