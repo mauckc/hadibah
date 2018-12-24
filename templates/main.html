@@ -1,0 +1,103 @@
+{% extends "template.html" %}
+
+{% block body %}
+<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/scroller/1.4.3/js/dataTables.scroller.min.js "></script>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    var data = [];
+    {% for row in rows %}
+        data.push([
+          unescape('<a target="_blank" href="/animal_id/{{ row['animal_id'] }}"><b>{{ row['animal_id'] }}</b></a>'),
+          "{{ row['impound_no']}}",
+          "{{ row['animal_type'] }}",
+          "{{ row['intake_type'] }}",
+          "{{ row['intake_subtype'] }}",
+          "{{ row['intake_cond'] }}",
+          "{{ row['outcome_type'] }}",
+          "{{ row['outcome_subtype']|safe }}",
+          "{{ row['outcome_cond']}}",
+          "{{ row['kennel_no']}}",
+          parseFloat("{{ row['weight'] }}"),
+          "{{ row['los']}}",
+          "{{ row['days_old']}}",
+          "{{ row['los_1']}}",
+          "{{ row['los_2']}}",
+          "{{ row['age_s_n_date']}}",
+          "{{ row['weight_difference']}}"
+          ]);
+    {% endfor %}
+
+    $('#sc-table').DataTable({
+      data: data,
+      deferRender: true,
+      scrollX: true,
+      scrollY: 500,
+      scrollCollapse: true,
+      scroller: true,
+      order: [[ 0, "desc" ]]
+    });
+  });
+</script>
+
+
+  <h1>Hadibah</h1>
+
+  <p>Accelerating animal data using shelter medecine based statistical analyses</p>
+
+  <p>A detailed description of each field can be found <a href="{{ url_for('static', filename='table.pdf') }}">here</a>.</p>
+
+  <p>Downdload the table in the following formats:
+  <a class="btn btn-info" href="download/animals.csv">CSV</a>
+  <a class="btn btn-info" href="download/animals.tsv">TSV</a>
+  <a class="btn btn-info" href="download/animals.xls">XLS</a>
+  </p>
+
+  <p>Customize Filter by Field and Value:
+  <form action="{{ url_for('filter') }}">
+    Field  : <input type="text" name="field"><br>
+    Value : <input type="text" name="value"><br>
+    <input type="submit" value="submit">
+  </form>
+  </p>
+
+  <p>Pick Filter by Intake Type:
+    <a class="btn btn-info" href="{{ url_for('filter', field='intake_type',value='STRAY') }}">STRAY</a>
+    <a class="btn btn-info" href="{{ url_for('filter', field='intake_type',value='DEAD') }}">DEAD</a>
+    <a class="btn btn-info" href="{{ url_for('filter', field='intake_type',value='QUARANTINE') }}">QUARANTINE</a>
+  </p>
+
+  <p>Pick Filter by Outcome Type:
+  <a class="btn btn-info" href="{{ url_for('filter', field='outcome_type',value='ADOPTION') }}">ADOPTION</a>
+  <a class="btn btn-info" href="{{ url_for('filter', field='outcome_type',value='RTO') }}">RTO</a>
+  <a class="btn btn-info" href="{{ url_for('filter', field='outcome_type',value='EUTH') }}">EUTH</a>
+  </p>
+
+  <hr>
+  <table id="sc-table" class="table table-hover table-responsive">
+    <thead>
+      <tr>
+
+        <th><label title="animal id">animal_id</label></th>
+        <th><label title="impound no">impound_no</label></th>
+        <th><label title="animal type">animal_type</label></th>
+        <th><label title="intake type">intake_type</label></th>
+        <th><label title="intake subtype">intake_subtype</label></th>
+        <th><label title="intake condition">intake_cond</label></th>
+        <th><label title="outcome type">outcome_type</label></th>
+        <th><label title="outcome subtype">outcome_subtype</label></th>
+        <th><label title="outcome condition">outcome_cond</label></th>
+        <th><label title="kennel number">kennel_no</label></th>
+        <th><label title="weight">weight</label></th>
+        <th><label title="los">los</label></th>
+        <th><label title="days_old">days_old</label></th>
+        <th><label title="los_1">los_1</label></th>
+        <th><label title="los_2">los_2</label></th>
+        <th><label title="age_s_n_date">age_s_n_date</label></th>
+        <th><label title="weight_difference">weight_difference</label></th>
+      </tr>
+    </thead>
+  </table>
+
+{% endblock %}

@@ -1,0 +1,30 @@
+{
+  "main": [
+    {
+      "title": "Place holder 1 main group title",
+      "adsabs": "https://place.holder.other.group.absabs.edu/#abs/2018A&A/abstract",
+      "authors": "Robertson, J.; Mauck, C.R.",
+      "abstract": "<b>Aims:</b> We explore the relations between humans and animals etc."
+    },
+    {
+      "title": "Place holder 2 main group title",
+      "adsabs": "https://place.holder.other.group.absabs.edu/#abs/2018A&A/abstract",
+      "authors": "Robertson, J.; Mauck, C.R.",
+      "abstract": "<b>Aims:</b> We explore the relations between humans and animals etc."
+    }
+  ],
+  "other": [
+    {
+      "title": "Place holder 1 other group title",
+      "adsabs": "https://place.holder.other.group.absabs.edu/#abs/2018A&A/abstract",
+      "authors": "Robertson, J.; Mauck, C.R.",
+      "abstract": "<b>Aims:</b> We explore the relations between humans and animals etc."
+    },
+    {
+      "title": "Place holder 2 other group title",
+      "adsabs": "https://place.holder.other.group.absabs.edu/#abs/2018A&A/abstract",
+      "authors": "Robertson, J.; Mauck, C.R.",
+      "abstract": "<b>Aims:</b> We explore the relations between humans and animals etc."
+    }
+  ]
+}

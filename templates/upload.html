@@ -1,0 +1,16 @@
+{% extends "template.html" %}
+
+{% block body %}
+
+<div class="col-lg-7">
+<h1>Upload a data file!</h1>
+
+<p>Please make sure that your file contains the appropriate header columns.</p>
+<br>
+<form method=post enctype=multipart/form-data>
+    <input type=file name=file>
+    <input type=submit value=Upload>
+</form>
+</div>
+
+{% endblock %}
