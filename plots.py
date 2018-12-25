@@ -284,7 +284,7 @@ def plot_page_inventory(df, columns, request, field=None, value=None):
     caninedf = df[(df.animal_type == "DOG") | (df.animal_type == "PUPPY")]
 
     dogmaxdate = dogdf['intake_date'].max()
-    dogmindate = dogdf['intake_date'].min()
+    dogmindate = dogdf['outcome_date'].min()
     daterange = pd.date_range(start=dogmindate, end=dogmaxdate)
     print("[INFO] Filtered by animal_type.")
     lasttime = nowtime
@@ -327,11 +327,11 @@ def plot_page_inventory(df, columns, request, field=None, value=None):
     # print(tsinvcat.columns)
 
     # print(df.head())
-    fig, ax = plt.subplots(2, 2, figsize=(14, 8), sharex='col', sharey='row')
-    points = ax[0, 0].plot_date(tsinvcat.index, tsinvcat.values)
-    points = ax[1, 0].plot_date(tsinvdog.index, tsinvdog.values)
-    points = ax[0, 1].plot_date(tsinvkitten.index, tsinvkitten.values)
-    points = ax[1, 1].plot_date(tsinvpuppy.index, tsinvpuppy.values)
+    fig, ax = plt.subplots(2, 2, figsize=(10, 6), sharex='col', sharey='row')
+    points = ax[0, 0].plot_date(tsinvcat.index, tsinvcat.values,'bo-')
+    points = ax[1, 0].plot_date(tsinvdog.index, tsinvdog.values,'ro-')
+    points = ax[0, 1].plot_date(tsinvkitten.index, tsinvkitten.values,'go-')
+    points = ax[1, 1].plot_date(tsinvpuppy.index, tsinvpuppy.values,'yo-')
 
     ax[1, 0].set_xlabel(x)
     ax[1, 0].set_ylabel('dog ' + y)

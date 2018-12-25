@@ -70,32 +70,29 @@
 
 <div class="col-lg-9">
   <h1>counts</h1>
-  {{ plot|safe }}
 
-  <p>Pick Filter by Animal Type:
+
+  <p> Filter by Animal Type:
     <a class="btn btn-info" href="{{ url_for('counts_plot_filter', field='animal_type',value='CAT') }}">Cats</a>
     <a class="btn btn-info" href="{{ url_for('counts_plot_filter', field='animal_type',value='DOG') }}">Dogs</a>
     <a class="btn btn-info" href="{{ url_for('counts_plot_filter', field='animal_type',value='KITTEN') }}">Kittens</a>
     <a class="btn btn-info" href="{{ url_for('counts_plot_filter', field='animal_type',value='PUPPY') }}">Puppies</a>
   </p>
 
-  <p>Pick Filter by Intake Sub-Type:
-    <a class="btn btn-info" href="{{ url_for('counts_plot_filter', field='intake_subtype',value='HEALTHY') }}">HEALTHY</a>
-    <a class="btn btn-info" href="{{ url_for('counts_plot_filter', field='intake_subtype',value='UNHEALTH') }}">UNHEALTH</a>
-    <a class="btn btn-info" href="{{ url_for('counts_plot_filter', field='intake_subtype',value='MANAGEAB') }}">MANAGEAB</a>
-    <a class="btn btn-info" href="{{ url_for('counts_plot_filter', field='intake_subtype',value='REHAB') }}">REHAB</a>
+  <p> Filter by Intake Sub-Type:
+    <a class="btn btn-info" href="{{ url_for('counts_plot_filter', field='intake_subtype',value='HEALTHY') }}">Healthy</a>
+    <a class="btn btn-info" href="{{ url_for('counts_plot_filter', field='intake_subtype',value='UNHEALTH') }}">Unhealthy</a>
+    <a class="btn btn-info" href="{{ url_for('counts_plot_filter', field='intake_subtype',value='MANAGEAB') }}">Manageable</a>
+    <a class="btn btn-info" href="{{ url_for('counts_plot_filter', field='intake_subtype',value='REHAB') }}">Rehabilitatable</a>
   </p>
 
-  <p>Pick Filter by Outcome Type:
-    <a class="btn btn-info" href="{{ url_for('counts_plot_filter', field='outcome_type',value='ADOPTION') }}">ADOPTION</a>
-    <a class="btn btn-info" href="{{ url_for('counts_plot_filter', field='outcome_type',value='RTO') }}">RTO</a>
-    <a class="btn btn-info" href="{{ url_for('counts_plot_filter', field='outcome_type',value='DIED') }}">DIED</a>
-    <a class="btn btn-info" href="{{ url_for('counts_plot_filter', field='outcome_type',value='FOSTER-VO') }}">FOSTER-VO</a>
+  <p> Filter by Outcome Type:
+    <a class="btn btn-info" href="{{ url_for('counts_plot_filter', field='outcome_type',value='ADOPTION') }}">Adoption</a>
+    <a class="btn btn-info" href="{{ url_for('counts_plot_filter', field='outcome_type',value='RTO') }}">Return to Owner</a>
+    <a class="btn btn-info" href="{{ url_for('counts_plot_filter', field='outcome_type',value='EUTH') }}">Euthanasia</a>
+    <a class="btn btn-info" href="{{ url_for('counts_plot_filter', field='outcome_type',value='FOSTER-VO') }}">Foster Volunteer</a>
   </p>
-
-
-</div>
-
+  {{ plot|safe }}
   <hr>
   <table id="sc-table" class="table table-hover table-responsive">
     <thead>
@@ -116,4 +113,5 @@
       </tr>
     </thead>
   </table>
+</div>
 {% endblock %}

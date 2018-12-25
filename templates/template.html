@@ -20,15 +20,17 @@
     <div id="particles">
       <div id="pnavbar">
         <a class="ptext navbar-brand" href="/"><span class="glyphicon glyphicon-home"></span> Hadibah </a>
-        <a class="ptext navbar-text" href="/linked/"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span> Linked</a>
-        <a class="ptext navbar-text" href="/counts/"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span> Counts</a>
-        <a class="ptext navbar-text" href="/inventory/"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span> Inventory</a>
-        <a class="ptext navbar-text" href="/length-of-stay/"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span> LOS</a>
+
         <a class="ptext navbar-text" href="/about/"><span class="glyphicon glyphicon-list" aria-hidden="true"></span> About</a>
-        <a class="ptext navbar-text" href="{{url_for('upload_file')}}"><span class="glyphicon glyphicon-list" aria-hidden="true"></span> Uploads</a>
         {% if not session.logged_in %}
           <a class="ptext navbar-text" href="{{ url_for('login') }}"><span class="glyphicon glyphicon-list" aria-hidden="true"></span> Log In</a>
         {% else %}
+          <a class="ptext navbar-text" href="/linked/"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span> Linked</a>
+          <a class="ptext navbar-text" href="/counts/"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span> Counts</a>
+          <a class="ptext navbar-text" href="/inventory/"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span> Inventory</a>
+          <a class="ptext navbar-text" href="/length-of-stay/"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span> Length of Stay</a>
+          <a class="ptext navbar-text" href="{{url_for('upload_file')}}"><span class="glyphicon glyphicon-list" aria-hidden="true"></span> Uploads</a>
+          <a class="ptext navbar-text" href="{{ url_for('show_entries') }}"><span class="glyphicon glyphicon-list" aria-hidden="true"></span> Forum</a>
           <a class="ptext navbar-text" href="{{ url_for('logout') }}"><span class="glyphicon glyphicon-list" aria-hidden="true"></span> Log Out</a>
         {% endif %}
       </div>
