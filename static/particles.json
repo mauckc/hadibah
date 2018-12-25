@@ -4,7 +4,7 @@
       "value": 500
     },
     "color":{
-      "value": "#eee5fe"
+      "value": "#EA897C"
     },
     "shape":{
       "type": "star"
@@ -16,6 +16,13 @@
         "enable": true,
         "speed": 10
       }
+    },
+    "line_linked": {
+      "enable": true,
+      "distance": 75,
+      "color": "#2EA1F1",
+      "opacity": 0.3,
+      "width": 1
     },
     "move":{
       "enable": true,

@@ -2,7 +2,7 @@
 
 {% block body %}
 
-<div class="col-lg-2">
+<div class="col-lg-3">
   <h3> choose custom filter: </h3>
   <div class="input-group mb-2">
     <form action="{{ url_for('linked_plot_filter') }}">
@@ -116,11 +116,11 @@
     <a class="btn btn-info" href="{{ url_for('linked_plot_filter', field='intake_type',value='PRO CUST') }}">Pro. Custody</a>
   </p>
 
-  {{ plot|safe }}
 
 </div>
 
-
-
+<div class="col-lg-5"></div>
+{{ plot|safe }}
+</div>
 
 {% endblock %}

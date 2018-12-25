@@ -146,7 +146,7 @@ def plot_page_mpld3(df, columns, request, field=None, value=None):
     # Does not work with NaN values! so we must remove rows with NaN values
     df = df.loc[:, {x1, x2, y1, y2, z}].dropna(axis=0)
 
-    fig, ax = plt.subplots(2, 2, figsize=(14, 8), sharex='col', sharey='row')
+    fig, ax = plt.subplots(2, 2, figsize=(12, 8), sharex='col', sharey='row')
     points = ax[0, 0].scatter(df[x1], df[y1], c=df[z], alpha=0.6)
     points = ax[1, 0].scatter(df[x1], df[y2], c=df[z], alpha=0.6)
     points = ax[0, 1].scatter(df[x2], df[y1], c=df[z], alpha=0.6)
@@ -187,7 +187,7 @@ def plot_page_counts(df, columns, request, field=None, value=None, rows=None):
             if requested_col not in columns:
                 return redirect(url_for('counts_plot'))
     else:
-        z = 'intake_type'
+        z = 'outcome_type'
     # Does not work with NaN values!
     df = df.loc[:, {z}].dropna(axis=0)
     # print(df.head())
@@ -216,7 +216,7 @@ def plot_page_los(df, columns, request, field=None, value=None, rows=None):
     df = df.loc[:, {z}].dropna(axis=0)
 
 
-    fig = plt.figure(figsize=(10,6))
+    fig = plt.figure(figsize=(12,6))
     # An "interface" to matplotlib.axes.Axes.hist() method
     n, bins, patches = plt.hist(x=df[z], bins='auto', color='#0504aa',
                                 alpha=0.7, rwidth=0.85)
@@ -231,7 +231,7 @@ def plot_page_los(df, columns, request, field=None, value=None, rows=None):
     # Set a clean upper y-axis limit.
     plt.ylim(ymax=np.ceil(maxfreq / 10) * 10 if maxfreq % 10 else maxfreq + 10)
 
-    field_index = 27
+    field_index = 29
     print(columns)
     for i, col in enumerate(columns):
         if col == z:
