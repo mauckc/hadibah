@@ -196,8 +196,8 @@ def login():
         usernames_passwords = cur.fetchall()
 
         # convert cursor object of row objects to strings.
-        lw = []
         ite = 0
+        lw = []
         for z in auth_list:
             ly = []
             for x in z:
