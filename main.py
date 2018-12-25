@@ -222,11 +222,11 @@ def login():
         # print('\n')
         if [[request.form['username']],[request.form['password']]] not in usernames_passwords:
             error = 'Invalid username and/or password'
-            flash('Invalid Login entry')
+            flash('Invalid login attempt')
         else:
             session['username'] = request.form['username']
             session['logged_in'] = True
-            flash('You were logged in')
+            flash('Welcome {}! You were successfully logged in. '.format(request.form['username']))
             return redirect(url_for('homepage'))
 
         # if request.form['username'] != app.config['USERNAME']:
