@@ -42,7 +42,8 @@ def allowed_file(filename):
 # Load default config and override config from an environment variable
 app.config.update(dict(
     DATABASE=os.path.join(app.root_path, 'hadibah.db'),
-    SECRET_KEY='thisisthesecretkey',
+    USER_DATABASE=os.path.join(app.root_path,'hadibahUsers.db'),
+    SECRET_KEY='thisisthesecretkey1215',
     USERNAME='admin',
     PASSWORD='admin'
 ))
@@ -53,23 +54,11 @@ def connect_db():
     rv.row_factory = sqlite3.Row
     return rv
 
-def init_db():
-    db = get_db()
-    with app.open_resource('schema.sql', mode='r') as f:
-        db.cursor().executescript(f.read())
-    db.commit()
-
-@app.cli.command('initdb')
-def initdb_command():
-    """Initializes the database."""
-    init_db()
-    print('Initialized the database.')
-
-@app.teardown_appcontext
-def close_db(error):
-    """Closes the database again at the end of the request."""
-    if hasattr(g, 'sqlite_db'):
-        g.sqlite_db.close()
+def connect_USER_db():
+    """Connects to the specific database."""
+    rv = sqlite3.connect(app.config['USER_DATABASE'])
+    rv.row_factory = sqlite3.Row
+    return rv
 
 def get_db():
     """Opens a new database connection if there is none yet for the
@@ -79,6 +68,51 @@ def get_db():
         g.sqlite_db = connect_db()
     return g.sqlite_db
 
+def get_USER_db():
+    """Opens a new database connection if there is none yet for the
+    current application context.
+    """
+    if not hasattr(g, 'sqlite_db'):
+        g.sqlite_db = connect_USER_db()
+    return g.sqlite_db
+
+def init_db():
+    db = get_db()
+    with app.open_resource('schema.sql', mode='r') as f:
+        db.cursor().executescript(f.read())
+    db.commit()
+
+def init_USER_db():
+    db = get_USER_db()
+    with app.open_resource('userSchema.sql', mode='r') as f:
+        db.cursor().executescript(f.read())
+    db.commit()
+
+@app.cli.command('initdb')
+def initdb_command():
+    """Initializes the database."""
+    init_db()
+    print('Initialized the database.')
+
+@app.cli.command('initUSERdb')
+def initUSERdb_command():
+    """Initializes the database."""
+    init_USER_db()
+    print('Initialized the USER database.')
+
+@app.route('/admin-reset')
+def reset_dbs():
+    """  Resets databases """
+    init_db()
+    init_USER_db()
+    print('Reset the databases.')
+    return redirect(url_for('homepage'))
+
+@app.teardown_appcontext
+def close_db(error):
+    """Closes the database again at the end of the request."""
+    if hasattr(g, 'sqlite_db'):
+        g.sqlite_db.close()
 
 @app.route('/add', methods=['POST'])
 def add_entry():
@@ -144,21 +178,69 @@ def animal_iddetail(animal_id=None):
             return render_template('detail.html', info=info, show_intake=show_intake, plot=plot)
     return redirect(url_for('homepage'))
 
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     """ Login to the server """
     error = None
     if request.method == 'POST':
-        if request.form['username'] != app.config['USERNAME']:
-            error = 'Invalid username'
-        elif request.form['password'] != app.config['PASSWORD']:
-            error = 'Invalid password'
+        # Check list of usernames and passwords to check if it matches
+        db = get_USER_db()
+        cur = db.execute('select username, password from users order by name desc')
+        curUsernames = db.execute('select username from users order by name desc')
+        curPasswords = db.execute('select password from users order by name desc')
+        usernames = curUsernames.fetchall()
+        passwords = curPasswords.fetchall()
+        auth_list = zip(usernames,passwords)
+        usernames_passwords = cur.fetchall()
+
+        # convert cursor object of row objects to strings.
+        lw = []
+        ite = 0
+        for z in auth_list:
+            ly = []
+            for x in z:
+                # print(x)
+                # l.append(x)
+                l = []
+                for y in x:
+                    # print(y)
+                    l.append(y)
+                ly.append(l)
+            lw.append(ly)
+
+        print(lw)
+        usernames_passwords = lw
+        # print(usernames_passwords[0])
+        # # print(auth_list)
+        # # print(cur.fetchall())
+        # # print(curUsernames)
+        # #
+        # # print(usernames_passwords) # DBUG!_____________------
+        # print((request.form['username'],request.form['password']))
+        # print('\n')
+        if [[request.form['username']],[request.form['password']]] not in usernames_passwords:
+            error = 'Invalid username and/or password'
+            flash('Invalid Login entry')
         else:
             session['username'] = request.form['username']
             session['logged_in'] = True
             flash('You were logged in')
             return redirect(url_for('homepage'))
+
+        # if request.form['username'] != app.config['USERNAME']:
+        #     error = 'Invalid username'
+        # elif request.form['password'] != app.config['PASSWORD']:
+        #     error = 'Invalid password'
+        # else:
+        #     session['username'] = request.form['username']
+        #     session['logged_in'] = True
+        #     flash('You were logged in')
+        #     return redirect(url_for('homepage'))
     return render_template('login.html', error=error)
+
+
 
 @app.route('/logout')
 def logout():
@@ -235,6 +317,40 @@ def download(fname):
             return send_from_directory('data', fname)
     else:
         return redirect(url_for("login"))
+
+@app.route('/signup', methods=['GET', 'POST'])
+def sign_up():
+    """ Have user go to sign up page """
+    error = None
+    if request.method == 'POST':
+        """ Parse the input data form """
+        """ MUST ADD IN ADD FORM INFO TO USERS LIST """
+        """ THIS WILL REQUIRE LOGIN AUTHENTICATION TO WORK DIFFERENTLY """
+        """ remove below because it is too strict"""
+        username = request.form['username']
+        password = request.form['password']
+        email = request.form['email']
+        name = request.form['name']
+
+        print('{}, {}, {}, {}'.format(username, password, email, name))
+
+        if request.form['username'] == app.config['USERNAME']:
+            error = 'Invalid username. User already exists.'
+        elif len(request.form['password']) < 6:
+            error = 'Invalid password. A minimum of 5 characters are required.'
+        else:
+            session['username'] = request.form['username']
+            session['logged_in'] = True
+            print()
+            flash('We have received your request!')
+
+            db = get_USER_db()
+            db.execute('insert into users (name, username, password, email) values (?, ?, ?, ?)',
+                         [request.form['name'], request.form['username'], request.form['password'], request.form['email']])
+            db.commit()
+            flash('New entry was successfully posted')
+            return redirect(url_for('homepage'))
+    return render_template('signup.html', error=error)
 
 # :5000/filter?field=alex&value=pw1
 @app.route('/filter/',methods=['GET','POST'])
@@ -359,4 +475,3 @@ def inventory_plot_filter():
 
 if __name__=='__main__':
     app.run(debug=True)
-    
