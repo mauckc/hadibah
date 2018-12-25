@@ -225,8 +225,8 @@ def plot_page_los(df, columns, request, field=None, value=None, rows=None):
     plt.xlabel('Length of Stay')
     plt.ylabel('Frequency Count')
     plt.title('Length of Stay')
-    plt.text(43, 90, r'$\mu=15, b=3$')
-    plt.xlim((0,100))
+    # plt.text(43, 90, r'$\mu=15, b=3$')
+    plt.xlim((0,60))
     maxfreq = n.max()
     # Set a clean upper y-axis limit.
     plt.ylim(ymax=np.ceil(maxfreq / 10) * 10 if maxfreq % 10 else maxfreq + 10)
