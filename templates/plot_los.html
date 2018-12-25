@@ -38,7 +38,7 @@
   });
 </script>
 
-<div class="col-lg-3">
+<div class="col-lg-2">
   <h3> choose custom filter: </h3>
   <div class="input-group mb-2">
     <form action="{{ url_for('los_plot_filter') }}">
@@ -73,29 +73,30 @@
     <a class="btn btn-info" href="{{ url_for('los_plot_filter', field='outcome_type',value='EUTH') }}">Euthanasia</a>
     <a class="btn btn-info" href="{{ url_for('los_plot_filter', field='outcome_type',value='FOSTER-VO') }}">Foster Volunteer</a>
   </p>
-  {{ plot|safe }}
+
 </div>
-  <div class="col-lg-9">
-  <hr>
-  <table id="sc-table" class="table table-hover table-responsive">
-    <thead>
-      <tr>
-        <th><label title="animal id">Animal ID</label></th>
-        <th><label title="impound no">Impound No.</label></th>
-        <th><label title="animal type">Animal Type</label></th>
-        <th><label title="intake type">Intake Type</label></th>
-        <th><label title="intake subtype">Intake Subtype</label></th>
-        <th><label title="intake condition">Intake Condition</label></th>
-        <th><label title="outcome type">Outcome Type</label></th>
-        <th><label title="outcome subtype">Outcome Subtype</label></th>
-        <th><label title="outcome condition">Outcome Condition</label></th>
-        <th><label title="kennel number">Kennel No.</label></th>
-        <th><label title="weight">Intake Weight</label></th>
-        <th><label title="los">Length of Stay</label></th>
-        <th><label title="days_old">Days Old</label></th>
-      </tr>
-    </thead>
-  </table>
+<div class="col-lg-12">
+{{ plot|safe }}
+<hr>
+<table id="sc-table" class="table table-hover table-responsive">
+  <thead>
+    <tr>
+      <th><label title="animal id">Animal ID</label></th>
+      <th><label title="impound no">Impound No.</label></th>
+      <th><label title="animal type">Animal Type</label></th>
+      <th><label title="intake type">Intake Type</label></th>
+      <th><label title="intake subtype">Intake Subtype</label></th>
+      <th><label title="intake condition">Intake Condition</label></th>
+      <th><label title="outcome type">Outcome Type</label></th>
+      <th><label title="outcome subtype">Outcome Subtype</label></th>
+      <th><label title="outcome condition">Outcome Condition</label></th>
+      <th><label title="kennel number">Kennel No.</label></th>
+      <th><label title="weight">Intake Weight</label></th>
+      <th><label title="los">Length of Stay</label></th>
+      <th><label title="days_old">Days Old</label></th>
+    </tr>
+  </thead>
+</table>
 
 </div>
 
