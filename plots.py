@@ -240,7 +240,6 @@ def plot_page_los(df, columns, request, field=None, value=None):
             pass
 
     # fig = barchart_counts(df, columns, field_index)
-
     plot = fig_to_html(fig)
     return render_template('plot_los.html', plot=plot, columns=columns,
                            z=z)
