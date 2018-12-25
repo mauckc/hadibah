@@ -280,7 +280,12 @@ def counts_plot():
     """Plot inventory over time"""
     if 'username' in session:
         df, columns = readSC()
-        return plot_page_counts(df, columns, request)
+        dfs = df.sort_values('impound_no', ascending=False)
+        cols = ['animal_id','animal_type','impound_no','intake_type','intake_subtype','intake_cond','outcome_type','outcome_subtype','outcome_cond','weight','intake_date','outcome_date','dob','primary_bree','secondary_','kennel_no','s_n_date','weight_1_week','due_out_date','location_1','location_1_date','location_2','location_2_date','los','days_old','los_1','los_2','age_s_n_date','weight_difference','in_to_due_out_date_diff','due_out_to_outcome_date_diff']
+        decimals = dict.fromkeys(cols, 2)
+        dfs = dfs.round(decimals=decimals)
+        dfs = dfs.to_dict('records')
+        return plot_page_counts(df, columns, request, rows=dfs)
     else:
         return redirect(url_for('login'))
 
@@ -291,7 +296,12 @@ def counts_plot_filter():
         value = request.args.get('value')
         df, columns = readSC()
         filterdf = df[df[str(field)] == value]
-        return plot_page_counts(filterdf, columns, request, field=field, value=value)
+        dfs = filterdf.sort_values('impound_no', ascending=False)
+        cols = ['animal_id','animal_type','impound_no','intake_type','intake_subtype','intake_cond','outcome_type','outcome_subtype','outcome_cond','weight','intake_date','outcome_date','dob','primary_bree','secondary_','kennel_no','s_n_date','weight_1_week','due_out_date','location_1','location_1_date','location_2','location_2_date','los','days_old','los_1','los_2','age_s_n_date','weight_difference','in_to_due_out_date_diff','due_out_to_outcome_date_diff']
+        decimals = dict.fromkeys(cols, 2)
+        dfs = dfs.round(decimals=decimals)
+        dfs = dfs.to_dict('records')
+        return plot_page_counts(filterdf, columns, request, field=field, value=value, rows=dfs)
     else:
         return redirect(url_for('login'))
 
@@ -300,7 +310,12 @@ def los_plot():
     """Plot inventory over time"""
     if 'username' in session:
         df, columns = readSC()
-        return plot_page_los(df, columns, request)
+        dfs = df.sort_values('impound_no', ascending=False)
+        cols = ['animal_id','animal_type','impound_no','intake_type','intake_subtype','intake_cond','outcome_type','outcome_subtype','outcome_cond','weight','intake_date','outcome_date','dob','primary_bree','secondary_','kennel_no','s_n_date','weight_1_week','due_out_date','location_1','location_1_date','location_2','location_2_date','los','days_old','los_1','los_2','age_s_n_date','weight_difference','in_to_due_out_date_diff','due_out_to_outcome_date_diff']
+        decimals = dict.fromkeys(cols, 2)
+        dfs = dfs.round(decimals=decimals)
+        dfs = dfs.to_dict('records')
+        return plot_page_los(df, columns, request, rows=dfs)
     else:
         return redirect(url_for('login'))
 
@@ -311,7 +326,12 @@ def los_plot_filter():
         value = request.args.get('value')
         df, columns = readSC()
         filterdf = df[df[str(field)] == value]
-        return plot_page_los(filterdf, columns, request, field=field, value=value)
+        dfs = filterdf.sort_values('impound_no', ascending=False)
+        cols = ['animal_id','animal_type','impound_no','intake_type','intake_subtype','intake_cond','outcome_type','outcome_subtype','outcome_cond','weight','intake_date','outcome_date','dob','primary_bree','secondary_','kennel_no','s_n_date','weight_1_week','due_out_date','location_1','location_1_date','location_2','location_2_date','los','days_old','los_1','los_2','age_s_n_date','weight_difference','in_to_due_out_date_diff','due_out_to_outcome_date_diff']
+        decimals = dict.fromkeys(cols, 2)
+        dfs = dfs.round(decimals=decimals)
+        dfs = dfs.to_dict('records')
+        return plot_page_los(filterdf, columns, request, field=field, value=value, rows=dfs)
     else:
         return redirect(url_for('login'))
 

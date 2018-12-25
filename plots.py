@@ -180,7 +180,7 @@ def plot_page_mpld3(df, columns, request, field=None, value=None):
     return render_template('plot_mpld3.html', plot=plot, columns=columns,
                            x1=x1, x2=x2, y1=y1, y2=y2, z=z)
 
-def plot_page_counts(df, columns, request, field=None, value=None):
+def plot_page_counts(df, columns, request, field=None, value=None, rows=None):
     if request.method == 'POST':  # Something is being submitted
         z = str(request.form['z'])
         for requested_col in {z}:
@@ -201,10 +201,10 @@ def plot_page_counts(df, columns, request, field=None, value=None):
     fig = barchart_counts(df, columns, field_index)
 
     plot = fig_to_html(fig)
-    return render_template('plot_counts.html', plot=plot, columns=columns,
+    return render_template('plot_counts.html', plot=plot, columns=columns, rows=rows,
                            z=z)
 
-def plot_page_los(df, columns, request, field=None, value=None):
+def plot_page_los(df, columns, request, field=None, value=None, rows=None):
     if request.method == 'POST':  # Something is being submitted
         z = str(request.form['z'])
         for requested_col in {z}:
@@ -242,7 +242,7 @@ def plot_page_los(df, columns, request, field=None, value=None):
     # fig = barchart_counts(df, columns, field_index)
     plot = fig_to_html(fig)
     return render_template('plot_los.html', plot=plot, columns=columns,
-                           z=z)
+                           z=z, rows=rows)
 
 
 def plot_page_inventory(df, columns, request, field=None, value=None):
