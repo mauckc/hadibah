@@ -39,7 +39,7 @@ def barchart_counts( dataf, headers, n, numvals=16):
     keys = [ cnts.keys()[i] for i in range(0,len(cnts.keys())) ]
     y_pos = np.arange(len(keys))
     vals = cnts.values
-    fig = plt.figure(figsize=(14,8))
+    fig = plt.figure(figsize=(10,6))
     plt.bar(y_pos, vals, align='center', alpha=0.5)
     plt.xticks(y_pos, keys)
     plt.ylabel('Counts')
@@ -216,7 +216,7 @@ def plot_page_los(df, columns, request, field=None, value=None):
     df = df.loc[:, {z}].dropna(axis=0)
 
 
-    fig = plt.figure(figsize=(14,8))
+    fig = plt.figure(figsize=(10,6))
     # An "interface" to matplotlib.axes.Axes.hist() method
     n, bins, patches = plt.hist(x=df[z], bins='auto', color='#0504aa',
                                 alpha=0.7, rwidth=0.85)

@@ -32,7 +32,7 @@ def readSC(nrows=None):
     plot_columns = cache.get('animalCols')
 
     if (df is None) or (plot_columns is None):
-        plot_columns = ['index','animal_id','animal_type','sex','primary_bree','dob','secondary_','kennel_no','impound_no','intake_type','intake_subtype','intake_date','s_n_date','intake_cond','weight','weight_1_week','outcome_type','outcome_subtype','outcome_date','due_out_date','outcome_cond','location_1','location_1_date','location_2','location_2_date','behavior_cond','outcome_behavior_cond','euth_reason','intake_date_form_2']
+        plot_columns = ['animal_id','animal_type','sex','primary_bree','dob','secondary_','kennel_no','impound_no','intake_type','intake_subtype','intake_date','s_n_date','intake_cond','weight','weight_1_week','outcome_type','outcome_subtype','outcome_date','due_out_date','outcome_cond','location_1','location_1_date','location_2','location_2_date','behavior_cond','outcome_behavior_cond','euth_reason','intake_date_form_2']
         if not os.path.exists('./data/animals.tsv'):
             print("[INFO]: animals.tsv does not exist...\n[INFO]: looking for other file extensions...")
             if os.path.exists('data/animal.xls'):
