@@ -68,7 +68,7 @@ def filter_data( dataf ):
     dataf.columns = [ col.replace(' ','_') for col in dataf.columns]
     dataf.columns = [ col.replace('\n','') for col in dataf.columns]
     dataf.columns = [ col.replace('\t','') for col in dataf.columns]
-    dataf = dataf.rename(columns={ dataf.columns[0]: "index" })
+    # dataf = dataf.rename(columns={ dataf.columns[0]: "index" })
 
     # Remove Dead Intake
     dataf = dataf[(dataf['intake_type']!="DEAD")&(dataf['intake_subtype']!="DEAD")&(dataf['intake_cond']!="DEAD")&(dataf['intake_type']!="DISPOSAL")&(dataf['intake_subtype']!="DISPOSAL")&(dataf['intake_cond']!="DISPOSAL")&(dataf['intake_type']!="DECEASED")&(dataf['intake_subtype']!="DECEASED")&(dataf['intake_cond']!="DECEASED")]
@@ -117,15 +117,15 @@ def filter_data( dataf ):
     ### Drop values with intake dates in the future
     dataf = dataf[ ( pd.to_datetime(dataf['intake_date']) < pd.to_datetime('2018-12-31') ) ]
     # Process null columns
-    dataf = dataf.dropna(how='all', axis=1)
-    dataf = dataf.dropna(how='all', axis=0)
+    # dataf = dataf.dropna(how='all', axis=1)
+    # dataf = dataf.dropna(how='all', axis=0,inplace=True)
     # Save columns as seperate structure to return with the processed dataframe
     columns = dataf.columns
     return dataf, columns
 
 print("[INFO]: Main thread is awake")
 # Setup file paths to data
-data_dir = './'
+data_dir = './olddata/'
 filename = 'animals.xls'
 animals_dat = pd.read_excel( data_dir + filename )
 
@@ -143,21 +143,23 @@ from subprocess import call
 writer = pd.ExcelWriter('./animals.xls')
 
 if os.path.exists('./animals.tsv'):
-    dat.to_csv('./animals.tsv', sep='\t')
+    print('[INFO]: tsv File exists! ')
+    dat.to_csv('./animals.tsv', sep='\t', index=False)
 else:
-    dat.to_csv('./animals.tsv', sep='\t')
+    dat.to_csv('./animals.tsv', sep='\t', index=False)
 
 if os.path.exists('./animals.csv'):
-    dat.to_csv('./animals.csv')
+    print('[INFO]: csv File exists! ')
+    dat.to_csv('./animals.csv', index=False)
 else:
-    dat.to_csv('./animals.csv')
+    dat.to_csv('./animals.csv', index=False)
 
 if os.path.exists('./animals.xls'):
-    print('[INFO]: tsv File exists! ')
-    dat.to_excel(writer,'Sheet1')
+    print('[INFO]: xls File exists! ')
+    dat.to_excel(writer,'Sheet1', index=False)
     writer.save()
 else:
-    dat.to_excel(writer,'Sheet1')
+    dat.to_excel(writer,'Sheet1', index=False)
     writer.save()
 
 
