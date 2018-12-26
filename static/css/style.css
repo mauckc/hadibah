@@ -9,10 +9,10 @@ body{
 }
 
 #particles{
-  background:#fef5f0;
-  height: 70px;
+  background:#fff3ed;
+  height: 55px;
   width: 100%;
-  opacity: 0.9;
+  opacity: 0.95;
 }
 
 #pnavbar{
@@ -20,7 +20,7 @@ body{
 }
 
 a.ptext{
-  color: #333333;
+  color: #222222;
 }
 
 hr {
@@ -28,7 +28,7 @@ hr {
   margin-bottom: 0.5em;
   border-style: solid;
   border-width: 2px;
-  color: #f3edff;
+  color: #c0a1ff;
 }
 
 .wrapper {

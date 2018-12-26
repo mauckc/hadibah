@@ -4,7 +4,7 @@
       "value": 500
     },
     "color":{
-      "value": "#EA897C"
+      "value": "#02FF56"
     },
     "shape":{
       "type": "star"
@@ -14,14 +14,14 @@
       "random": true,
       "anim":{
         "enable": true,
-        "speed": 10
+        "speed": 3
       }
     },
     "line_linked": {
       "enable": true,
-      "distance": 75,
-      "color": "#2EA1F1",
-      "opacity": 0.3,
+      "distance": 43,
+      "color": "#5602FF",
+      "opacity": 0.55,
       "width": 1
     },
     "move":{
@@ -44,7 +44,7 @@
     },
     "modes":{
       "bubble":{
-        "distance": 100,
+        "distance": 50,
         "size": 4
       }
     }
