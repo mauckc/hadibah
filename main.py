@@ -212,7 +212,7 @@ def login():
                 ly.append(l)
             lw.append(ly)
 
-        print(lw)
+        # print(lw)
         usernames_passwords = lw
         # print(usernames_passwords[0])
         # # print(auth_list)
@@ -224,7 +224,7 @@ def login():
         # print('\n')
         if [[request.form['username']],[request.form['password']]] not in usernames_passwords:
             error = 'Invalid username and/or password'
-            flash('Invalid login attempt')
+            flash('Sign up if you do not already have an account')
         else:
             session['username'] = request.form['username']
             session['logged_in'] = True
@@ -265,7 +265,6 @@ def admin_login():
                 # session['username'] = request.form['username']
                 session['admin'] = True
                 session['logged_in'] = True
-                print()
                 flash('Welcome {}! You were successfully logged in. '.format(request.form['username']))
 
                 db = get_USER_db()
@@ -422,6 +421,7 @@ def filter():
         filterdfs = filterdfs.to_dict('records')
         return render_template('main.html', rows=filterdfs)
     else:
+        flash('Sign up if you do not already have an account')
         return redirect(url_for('login'))
 
 @app.route("/linked/", methods=['GET', 'POST'])

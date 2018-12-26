@@ -116,7 +116,7 @@ def detail_plot(df, tlow, thigh):
     ax.yaxis.set_major_formatter(plt.NullFormatter())
     ax.set_yticks([])
     ax.spines['left'].set_visible(False)
-    ax.set_facecolor('black')
+    # ax.set_facecolor('black')
     plt.tight_layout()
 
     for i, text in enumerate(no_los):

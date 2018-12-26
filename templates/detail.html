@@ -13,44 +13,45 @@
 {% endif %}
 
 <h1> {{ info[0]['animal_id'] }} </h1>
-<div class="col-lg-4">
-  <h2>Animal information</h2>
-  <h3>General info</h3>
-  <p>Animal ID: {{ info[0]['intake_date'] }}</p>
-  <p>Animal Type: {{ info[0]['animal_type'] }}</p> </p>
-</div>
-
 
 <div class="col-lg-3">
+  <h2>Animal information</h2>
+  <h3>General info</h3>
+  <h3 style="color:#9d63db">Animal ID Number: {{ info[0]['animal_id'] }}</h3>
+  <h3 style="color:#d85fc1">Animal Type Date: {{ info[0]['animal_type'] }}</h3>
+  <h3 style="color:#9d63db">Primary Breed: {{ info[0]['primary_bree'] }}</h3>
+  <h3 style="color:#d85fc1">Secondary Breed: {{ info[0]['secondary_'] }} </h3>
+</div>
+
+<div class="col-lg-5">
   {% if show_intake %}
-    <h2>Intake information</h2>
-
+  <h1>  </h1>
+    <h1>Intake Record</h1>
+    <br>
     {% for intake in info %}
+    <h2>Intake information</h2>
+    <a style="color:#9d63db">Impound Number: {{ intake['impound_no'] }}</a><br>
+    <a style="color:#d85fc1">Intake Date: {{ intake['intake_date'] }}</a><br>
+    <a style="color:#d85fc1">Intake Date: {{ intake['intake_date'] }}</a><br>
+    <a style="color:#e562b2">Intake Type: {{ intake['intake_type'] }} </a><br>
+    <a style="color:#e7658d">Intake Subtype: {{ intake['intake_subtype'] }} </a><br>
+    <a style="color:#9d63db">Intake Condition: {{ intake['intake_condition'] }}</a><br><br>
 
-      <h2>Animal information</h2>
-      <h3>General info</h3>
+    <h2>Outcome informations</h2>
+    <a style="color:#d85fc1">Outcome Date: {{ intake['outcome_date'] }}</a><br>
+    <a style="color:#e562b2">Outcome Type: {{ intake['outcome_type'] }} </a><br>
+    <a style="color:#e7658d">Outcome Subtype: {{ intake['outcome_subtype'] }}</a><br>
+    <a style="color:#d85fc1">Outcome Condition: {{ intake['outcome_condition'] }} </a><br><br>
+    <a style="color:#e562b2">Gender: {{ intake['sex'] }} </a><br>
 
-      <h4>Intake info</h4>
-      <p>Impound Number: {{ intake['impound_no'] }}</p>
-      <p>Intake Date: {{ intake['intake_date'] }}</p>
-      <p>Intake Type: {{ intake['intake_type'] }}</p>
-      <p>Intake Subtype: {{ intake['intake_subtype'] }} </p>
-      <p>Intake Condition: {{ intake['intake_condition'] }} </p>
-
-      <h4>Outcome info</h4>
-      <p>Outcome Date: {{ intake['outcome_date'] }}</p>
-      <p>Outcome Type: {{ intake['outcome_type'] }}</p>
-      <p>Outcome Subtype: {{ intake['outcome_subtype'] }} </p>
-      <p>Outcome Condition: {{ intake['outcome_condition'] }} </p>
-      <p>Gender: {{ intake['sex'] }}</p>
-
-      <h3>Derived parameters</h3>
-      <p>LOS: {{ intake['los'] }} days</p>
-      <p>Days Old: {{ intake['days_old'] }} days</p>
+    <h2>Derived parameters</h2>
+    <a style="color:#d85fc1">Days Old at Intake: {{ intake['days_old'] }}</a><br>
+    <a style="color:#d85fc1">Animal Type Date: {{ intake['animal_type'] }}</a><br>
+    <a style="color:#e562b2">Length of Stay: {{ intake['los'] }} </a><br>
+    <br>
+    <br>
     {% endfor %}
   {% endif %}
-
-
 </div>
 
 
