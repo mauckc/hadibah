@@ -21,7 +21,6 @@
       <div id="pnavbar">
         <a class="ptext navbar-brand" href="/"><span class="glyphicon glyphicon-home"></span> Hadibah </a>
 
-        <a class="ptext navbar-text" href="/about/"><span class="glyphicon glyphicon-list" aria-hidden="true"></span> About</a>
         {% if not session.logged_in %}
           <a class="ptext navbar-text" href="{{ url_for('login') }}"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Log In</a>
           <a class="ptext navbar-text" href="{{ url_for('sign_up') }}"><span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span> Sign Up</a>
@@ -37,6 +36,7 @@
             <a class="ptext navbar-text" href="{{ url_for('downloads') }}"><span class="glyphicon glyphicon-download" aria-hidden="true"></span> Downloads</a>
           {% endif %}
         {% endif %}
+        <a class="ptext navbar-text" href="/about/"><span class="glyphicon glyphicon-list" aria-hidden="true"></span> About</a>
       </div>
     </div>
     <hr>
