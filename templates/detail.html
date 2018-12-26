@@ -2,6 +2,42 @@
 
 {% block body %}
 
+<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/scroller/1.4.3/js/dataTables.scroller.min.js "></script>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    var data = [];
+    {% for row in rows %}
+        data.push([
+          unescape('<a target="_blank" href="/animal_id/{{ row['animal_id'] }}"><b>{{ row['animal_id'] }}</b></a>'),
+          "{{ row['impound_no']}}",
+          "{{ row['animal_type'] }}",
+          "{{ row['intake_type'] }}",
+          "{{ row['intake_subtype'] }}",
+          "{{ row['intake_cond'] }}",
+          "{{ row['outcome_type'] }}",
+          "{{ row['outcome_subtype'] }}",
+          "{{ row['outcome_cond']}}",
+          "{{ row['kennel_no']}}",
+          parseFloat("{{ row['weight'] }}"),
+          "{{ row['los']}}",
+          "{{ row['days_old']}}"
+          ]);
+    {% endfor %}
+
+    $('#sc-table').DataTable({
+      data: data,
+      deferRender: true,
+      scrollX: true,
+      scrollY: 500,
+      scrollCollapse: true,
+      scroller: true,
+      order: [[ 0, "desc" ]]
+    });
+  });
+</script>
+
 {% if show_intake %}
   {% if plot != None %}
     <div class="wrapper">
@@ -11,6 +47,26 @@
     </div>
   {% endif %}
 {% endif %}
+<hr>
+<table id="sc-table" class="table table-hover table-responsive">
+  <thead>
+    <tr>
+      <th><label title="animal id">Animal ID</label></th>
+      <th><label title="impound no">Impound No.</label></th>
+      <th><label title="animal type">Animal Type</label></th>
+      <th><label title="intake type">Intake Type</label></th>
+      <th><label title="intake subtype">Intake Subtype</label></th>
+      <th><label title="intake condition">Intake Condition</label></th>
+      <th><label title="outcome type">Outcome Type</label></th>
+      <th><label title="outcome subtype">Outcome Subtype</label></th>
+      <th><label title="outcome condition">Outcome Condition</label></th>
+      <th><label title="kennel number">Kennel No.</label></th>
+      <th><label title="weight">Intake Weight</label></th>
+      <th><label title="los">Length of Stay</label></th>
+      <th><label title="days_old">Days Old</label></th>
+    </tr>
+  </thead>
+</table>
 
 <h1> {{ info[0]['animal_id'] }} </h1>
 

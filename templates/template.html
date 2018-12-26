@@ -24,7 +24,7 @@
         <a class="ptext navbar-text" href="/about/"><span class="glyphicon glyphicon-list" aria-hidden="true"></span> About</a>
         {% if not session.logged_in %}
           <a class="ptext navbar-text" href="{{ url_for('login') }}"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Log In</a>
-          <a class="ptext navbar-text" href="{{ url_for('sign_up') }}"><span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span> Sign Up</a>          
+          <a class="ptext navbar-text" href="{{ url_for('sign_up') }}"><span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span> Sign Up</a>
         {% else %}
           <a class="ptext navbar-text" href="/counts/"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span> Counts</a>
           <a class="ptext navbar-text" href="/inventory/"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span> Inventory</a>
@@ -33,6 +33,9 @@
           <a class="ptext navbar-text" href="{{url_for('upload_file')}}"><span class="glyphicon glyphicon-hdd" aria-hidden="true"></span> Uploads</a>
           <a class="ptext navbar-text" href="{{ url_for('show_entries') }}"><span class="glyphicon glyphicon-comment" aria-hidden="true"></span> Forum</a>
           <a class="ptext navbar-text" href="{{ url_for('logout') }}"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Log Out</a>
+          {% if session.admin %}
+            <a class="ptext navbar-text" href="{{ url_for('downloads') }}"><span class="glyphicon glyphicon-download" aria-hidden="true"></span> Downloads</a>
+          {% endif %}
         {% endif %}
       </div>
     </div>

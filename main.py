@@ -177,7 +177,12 @@ def animal_iddetail(animal_id=None):
             d.fillna('...', inplace=True)
             info = d.to_dict('records')
 
-            return render_template('detail.html', info=info, show_intake=show_intake, plot=plot)
+            dfs = d.sort_values('impound_no', ascending=False)
+            cols = ['animal_id','animal_type','impound_no','intake_type','intake_subtype','intake_cond','outcome_type','outcome_subtype','outcome_cond','weight','intake_date','outcome_date','dob','primary_bree','secondary_','kennel_no','s_n_date','weight_1_week','due_out_date','location_1','location_1_date','location_2','location_2_date','los','days_old','los_1','los_2','age_s_n_date','weight_difference','in_to_due_out_date_diff','due_out_to_outcome_date_diff']
+            decimals = dict.fromkeys(cols, 2)
+            dfs = dfs.round(decimals=decimals)
+            dfs = dfs.to_dict('records')
+            return render_template('detail.html', info=info, show_intake=show_intake, plot=plot, rows=dfs)
     return redirect(url_for('homepage'))
 
 
@@ -371,6 +376,10 @@ def download(fname):
             return send_from_directory('data', fname)
     else:
         return redirect(url_for("login"))
+
+@app.route('/downloads')
+def downloads():
+    return render_template('downloads.html')
 
 @app.route('/signup', methods=['GET', 'POST'])
 def sign_up():
