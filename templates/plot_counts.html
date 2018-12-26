@@ -1,0 +1,122 @@
+{% extends "template.html" %}
+
+{% block body %}
+
+<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/scroller/1.4.3/js/dataTables.scroller.min.js "></script>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    var data = [];
+    {% for row in rows %}
+        data.push([
+          unescape('<a target="_blank" href="/animal_id/{{ row['animal_id'] }}"><b>{{ row['animal_id'] }}</b></a>'),
+          "{{ row['impound_no']}}",
+          "{{ row['animal_type'] }}",
+          "{{ row['intake_type'] }}",
+          "{{ row['intake_subtype'] }}",
+          "{{ row['intake_cond'] }}",
+          "{{ row['outcome_type'] }}",
+          "{{ row['outcome_subtype'] }}",
+          "{{ row['outcome_cond']}}",
+          "{{ row['kennel_no']}}",
+          parseFloat("{{ row['weight'] }}"),
+          "{{ row['los']}}",
+          "{{ row['days_old']}}"
+          ]);
+    {% endfor %}
+
+    $('#sc-table').DataTable({
+      data: data,
+      deferRender: true,
+      scrollX: true,
+      scrollY: 500,
+      scrollCollapse: true,
+      scroller: true,
+      order: [[ 0, "desc" ]]
+    });
+  });
+</script>
+
+<div class="col-lg-3">
+  <h3> choose custom filter: </h3>
+  <div class="input-group mb-2">
+    <form action="{{ url_for('counts_plot_filter') }}">
+      <input type="text" class="form-control" placeholder="i.e. animal_type" name="field" aria-label="field" aria-describedby="basic-addon1"><br>
+      <input type="text" class="form-control" placeholder="i.e. CAT" name="value" aria-label="value" aria-describedby="basic-addon2"><br>
+      <button class="btn btn-info btn-sm" type="submit">Submit</button>
+    </form>
+  </div>
+  <h3>Select your settings: </h3>
+  <form class="form-inline" name="color_button" method='POST'>
+    <br>
+    <div class="input-group">
+      <span class="input-group-addon"><label>Field Dimension: </label></span>
+      <select name="z">
+      {% for column in columns %}
+        {% if column == z %}
+          <option selected="selected">{{ z }}</option>
+        {% else %}
+          <option value="{{ column }}">{{ column }}</option>
+        {% endif %}
+      {% endfor %}
+    </select>
+    </div>
+    <br>
+    <button class="btn btn-info btn-sm" type="submit">Submit</button>
+  </form>
+  <br>
+</div>
+
+<div class="col-lg-9">
+  <h1>counts</h1>
+
+
+  <p> Filter by Animal Type:
+    <a class="btn btn-info btn-sm" href="{{ url_for('counts_plot_filter', field='animal_type',value='CAT') }}">Cats</a>
+    <a class="btn btn-info btn-sm" href="{{ url_for('counts_plot_filter', field='animal_type',value='DOG') }}">Dogs</a>
+    <a class="btn btn-info btn-sm" href="{{ url_for('counts_plot_filter', field='animal_type',value='KITTEN') }}">Kittens</a>
+    <a class="btn btn-info btn-sm" href="{{ url_for('counts_plot_filter', field='animal_type',value='PUPPY') }}">Puppies</a>
+  </p>
+
+  <p> Filter by Intake Sub-Type:
+    <a class="btn btn-primary btn-sm" href="{{ url_for('counts_plot_filter', field='intake_subtype',value='HEALTHY') }}">Healthy</a>
+    <a class="btn btn-primary btn-sm" href="{{ url_for('counts_plot_filter', field='intake_subtype',value='UNHEALTH') }}">Unhealthy</a>
+    <a class="btn btn-primary btn-sm" href="{{ url_for('counts_plot_filter', field='intake_subtype',value='MANAGEAB') }}">Manageable</a>
+    <a class="btn btn-primary btn-sm" href="{{ url_for('counts_plot_filter', field='intake_subtype',value='REHAB') }}">Rehabilitatable</a>
+  </p>
+
+  <p> Filter by Outcome Type:
+    <a class="btn btn-success btn-sm" href="{{ url_for('counts_plot_filter', field='outcome_type',value='ADOPTION') }}">Adoption</a>
+    <a class="btn btn-success btn-sm" href="{{ url_for('counts_plot_filter', field='outcome_type',value='RTO') }}">Return to Owner</a>
+    <a class="btn btn-success btn-sm" href="{{ url_for('counts_plot_filter', field='outcome_type',value='EUTH') }}">Euthanasia</a>
+    <a class="btn btn-success btn-sm" href="{{ url_for('counts_plot_filter', field='outcome_type',value='FOSTER-VO') }}">Foster Volunteer</a>
+  </p>
+  <hr>
+  {{ plot|safe }}
+</div>
+<hr>
+<div class="col-lg-9"></div>
+  <hr>
+  <table id="sc-table" class="table table-hover table-responsive">
+    <thead>
+      <tr>
+        <th><label title="animal id">Animal ID</label></th>
+        <th><label title="impound no">Impound No.</label></th>
+        <th><label title="animal type">Animal Type</label></th>
+        <th><label title="intake type">Intake Type</label></th>
+        <th><label title="intake subtype">Intake Subtype</label></th>
+        <th><label title="intake condition">Intake Condition</label></th>
+        <th><label title="outcome type">Outcome Type</label></th>
+        <th><label title="outcome subtype">Outcome Subtype</label></th>
+        <th><label title="outcome condition">Outcome Condition</label></th>
+        <th><label title="kennel number">Kennel No.</label></th>
+        <th><label title="weight">Intake Weight</label></th>
+        <th><label title="los">Length of Stay</label></th>
+        <th><label title="days_old">Days Old</label></th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+{% endblock %}

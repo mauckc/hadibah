@@ -1,0 +1,22 @@
+{% extends "template.html" %}
+  {% block body %}
+    <h1> Forum: </h1>
+    {% if session.logged_in %}
+      <h3> Add an entry: </h3>
+      <div class="input-group mb-2">
+        <form action="{{ url_for('add_entry') }}" method=post class=add-entry>
+          field: <input type="text" class="form-control" placeholder="your title here" name="title" aria-label="title" aria-describedby="basic-addon1"><br>
+          value: <input type="text" class="form-control" placeholder="your text here" name="text" aria-label="value" aria-describedby="basic-addon2" rows=5 cols=40><br>
+          <button class="btn btn-info" type="submit" value=Share>Submit</button>
+        </form>
+      </div>
+      <br>
+    {% endif %}
+    <ul class=entries>
+    {% for entry in entries %}
+      <li><h2>{{ entry.title }}</h2>{{ entry.text|safe }}
+    {% else %}
+    <li><em>No entries have been submitted.</em>
+    {% endfor %}
+    </ul>
+{% endblock %}

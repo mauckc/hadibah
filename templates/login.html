@@ -1,0 +1,13 @@
+{% extends "template.html" %}
+{% block body %}
+  <h2>Login</h2>
+  {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
+  <h4> Enter your username and password below. </h4>
+  <div class="input-group mb-2">
+    <form action="{{ url_for('login') }}" method=post>
+      <input type="text" class="form-control" placeholder="your username" name="username" aria-label="username" aria-describedby="basic-addon1"><br>
+      <input type="password" class="form-control" placeholder="your password" name="password" aria-label="password" aria-describedby="basic-addon2"><br><br>
+      <button class="btn btn-info" type="submit" value=Login>Submit</button>
+    </form>
+  </div>
+{% endblock %}

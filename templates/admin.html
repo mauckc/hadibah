@@ -1,0 +1,29 @@
+{% extends "template.html" %}
+  {% block body %}
+    <h1> Admin </h1>
+    {% if session.admin %}
+      <h3> Users: </h3>
+      <ul class=users>
+      {% for user in users %}
+        <li>
+          <h3 style="color:#9d63db">Name:     {{ user.name }}</h3>
+          <h3 style="color:#d85fc1">Username: {{ user.username }}</h3>
+          <h3 style="color:#e562b2">Password: {{ user.password }} </h3>
+          <h3 style="color:#e7658d">Email:    {{ user.email }} </h3><br>
+      {% else %}
+      <li><em>No Users exist.</em>
+      {% endfor %}
+      </ul>
+    {% else %}
+      <h2>Admin Login</h2>
+      {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
+      <h4> Enter your username and password below. </h4>
+      <div class="input-group mb-2">
+        <form action="{{ url_for('admin_login') }}" method=post>
+          <input type="text" class="form-control" placeholder="your username" name="username" aria-label="username" aria-describedby="basic-addon1"><br>
+          <input type="password" class="form-control" placeholder="your password" name="password" aria-label="password" aria-describedby="basic-addon2"><br><br>
+          <button class="btn btn-info" type="submit" value=Login>Submit</button>
+        </form>
+      </div>
+    {% endif %}
+{% endblock %}

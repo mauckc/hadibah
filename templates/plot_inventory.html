@@ -1,0 +1,35 @@
+{% extends "template.html" %}
+
+{% block body %}
+
+<div class="col-lg-3">
+  <h3> choose custom filter: </h3>
+  <div class="input-group mb-2">
+    <form action="{{ url_for('inventory_plot_filter') }}">
+      <input type="text" class="form-control" placeholder="i.e. animal_type" name="field" aria-label="field" aria-describedby="basic-addon1"><br>
+      <input type="text" class="form-control" placeholder="i.e. CAT" name="value" aria-label="value" aria-describedby="basic-addon2"><br>
+      <button class="btn btn-info btn-sm" type="submit">Submit</button>
+    </form>
+  </div>
+</div>
+
+<div class="col-lg-9">
+  <h1>Inventory</h1>
+  <p> Filter by Intake Sub-Type:
+    <a class="btn btn-primary btn-sm" href="{{ url_for('inventory_plot_filter', field='intake_subtype',value='HEALTHY') }}">Healthy</a>
+    <a class="btn btn-primary btn-sm" href="{{ url_for('inventory_plot_filter', field='intake_subtype',value='UNHEALTH') }}">Unhealthy</a>
+    <a class="btn btn-primary btn-sm" href="{{ url_for('inventory_plot_filter', field='intake_subtype',value='MANAGEAB') }}">Manageable</a>
+    <a class="btn btn-primary btn-sm" href="{{ url_for('inventory_plot_filter', field='intake_subtype',value='REHAB') }}">Rehabilitatable</a>
+  </p>
+
+  <p> Filter by Outcome Type:
+    <a class="btn btn-success btn-sm" href="{{ url_for('inventory_plot_filter', field='outcome_type',value='ADOPTION') }}">Adoption</a>
+    <a class="btn btn-success btn-sm" href="{{ url_for('inventory_plot_filter', field='outcome_type',value='RTO') }}">Return to Owner</a>
+    <a class="btn btn-success btn-sm" href="{{ url_for('inventory_plot_filter', field='outcome_type',value='EUTH') }}">Euthanasia</a>
+    <a class="btn btn-success btn-sm" href="{{ url_for('inventory_plot_filter', field='outcome_type',value='FOSTER-VO') }}">Foster Volunteer</a>
+  </p>
+  <hr>
+  {{ plot|safe }}
+</div>
+
+{% endblock %}
