@@ -229,6 +229,7 @@ def login():
             session['username'] = request.form['username']
             session['logged_in'] = True
             flash('Welcome {}! You were successfully logged in. '.format(request.form['username']))
+            session.pop('admin', None)
             return redirect(url_for('homepage'))
 
         # if request.form['username'] != app.config['USERNAME']:
@@ -246,25 +247,47 @@ def login():
 def admin_login():
     """ Login to the admin server """
     error = None
-    if request.method == 'POST':
-        if request.form['username'] != app.config['ADUSER'] and request.form['password'] != app.config['ADPASS']:
-            error = 'Invalid username and/or password.'
-            flash('Invalid login attempt')
-        elif len(request.form['password']) < 6:
-            error = 'Invalid password. A minimum of 5 characters are required.'
-            flash('Invalid login attempt')
-        else:
-            session['username'] = request.form['username']
-            session['admin'] = True
-            session['logged_in'] = True
-            print()
-            flash('Welcome {}! You were successfully logged in. '.format(request.form['username']))
 
-            db = get_USER_db()
-            cur = db.execute('select name, username, password, email from users order by username desc')
-            users = cur.fetchall()
-            return render_template('admin.html', users=users)
-            
+    if 'admin' not in session:
+        session['admin'] = False
+
+    if not session['admin']:
+        if request.method == 'POST':
+            if request.form['username'] != app.config['ADUSER'] or request.form['password'] != app.config['ADPASS']:
+                if 'username' in session:
+                    flash('Invalid login attempt {}'.format(session['username']))
+                error = 'Invalid username and/or password.'
+                flash('Invalid login attempt')
+            # elif session['username'] != app.config['ADUSER']:
+            #     error = 'Invalid username and/or password.'
+            #     flash('Invalid login attempt')
+            else:
+                # session['username'] = request.form['username']
+                session['admin'] = True
+                session['logged_in'] = True
+                print()
+                flash('Welcome {}! You were successfully logged in. '.format(request.form['username']))
+
+                db = get_USER_db()
+                cur = db.execute('select name, username, password, email from users order by username desc')
+                users = cur.fetchall()
+                return render_template('admin.html', users=users)
+
+        return render_template('admin.html')
+
+    else:
+        # session['admin'] = True
+        # Already logged in as admin
+        # session['admin'] = True
+        session['logged_in'] = True
+        session['username'] = 'admin'
+        flash('Welcome {} Admin! You were already logged in. '.format(session['admin']))
+
+        db = get_USER_db()
+        cur = db.execute('select name, username, password, email from users order by username desc')
+        users = cur.fetchall()
+        return render_template('admin.html',users=users)
+
     return render_template('admin.html')
 
 
@@ -273,6 +296,11 @@ def admin_login():
 def logout():
     session.pop('logged_in', None)
     session.pop('username', None)
+    session.pop('name', None)
+    session.pop('email', None)
+    # session.pop('password', None)
+    # session.pop('admin', False)
+    session['admin'] = False
     flash('You were logged out')
     return redirect(url_for('show_entries'))
 
@@ -361,14 +389,13 @@ def sign_up():
 
         print('{}, {}, {}, {}'.format(username, password, email, name))
 
-        if request.form['username'] == app.config['ADMIN_USERNAME']:
+        if request.form['username'] == app.config['ADMINUSERNAME']:
             error = 'Invalid username. User already exists.'
         elif len(request.form['password']) < 6:
             error = 'Invalid password. A minimum of 5 characters are required.'
         else:
             session['username'] = request.form['username']
             session['logged_in'] = True
-            print()
             flash('We have received your request!')
 
             db = get_USER_db()
