@@ -43,9 +43,11 @@ def allowed_file(filename):
 app.config.update(dict(
     DATABASE=os.path.join(app.root_path, 'hadibah.db'),
     USER_DATABASE=os.path.join(app.root_path,'hadibahUsers.db'),
-    SECRET_KEY='thisisthesecretkey1215',
-    USERNAME='admin',
-    PASSWORD='admin'
+    SECRET_KEY='thisisthesecretkey!215',
+    ADMINUSERNAME='mossrock',
+    ADMINPASSWORD='Sharpie17!',
+    ADPASS = 'Sharpie17!',
+    ADUSER = 'mossrock'
 ))
 
 def connect_db():
@@ -240,6 +242,31 @@ def login():
         #     return redirect(url_for('homepage'))
     return render_template('login.html', error=error)
 
+@app.route('/admin-server', methods=['GET', 'POST'])
+def admin_login():
+    """ Login to the admin server """
+    error = None
+    if request.method == 'POST':
+        if request.form['username'] != app.config['ADUSER'] and request.form['password'] != app.config['ADPASS']:
+            error = 'Invalid username and/or password.'
+            flash('Invalid login attempt')
+        elif len(request.form['password']) < 6:
+            error = 'Invalid password. A minimum of 5 characters are required.'
+            flash('Invalid login attempt')
+        else:
+            session['username'] = request.form['username']
+            session['admin'] = True
+            session['logged_in'] = True
+            print()
+            flash('Welcome {}! You were successfully logged in. '.format(request.form['username']))
+
+            db = get_USER_db()
+            cur = db.execute('select name, username, password, email from users order by username desc')
+            users = cur.fetchall()
+            return render_template('admin.html', users=users)
+            
+    return render_template('admin.html')
+
 
 
 @app.route('/logout')
@@ -334,7 +361,7 @@ def sign_up():
 
         print('{}, {}, {}, {}'.format(username, password, email, name))
 
-        if request.form['username'] == app.config['USERNAME']:
+        if request.form['username'] == app.config['ADMIN_USERNAME']:
             error = 'Invalid username. User already exists.'
         elif len(request.form['password']) < 6:
             error = 'Invalid password. A minimum of 5 characters are required.'
