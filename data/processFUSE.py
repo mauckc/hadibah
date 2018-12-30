@@ -13,7 +13,7 @@ import math
 if __name__ == '__main__':
     # Read csv to file using pandas
     # inAndOutData_path = "allJoinedProcessedDataAAC.csv"
-    inAndOutData_path = "safe_noheaders_allJoinedProcessedDataAAC.csv"
+    inAndOutData_path = "final_93690_allJoinedProcessedDataAAC.csv"
 
     df = pd.read_csv(inAndOutData_path)
 
@@ -35,17 +35,35 @@ if __name__ == '__main__':
     print(headers_inAndOut)
     print( np.shape(df) )
     print(df.head())
+    df['los'] = (pd.to_datetime(df.outcome_datetime) - pd.to_datetime(df.datetime))/ np.timedelta64(1, 'D')
     # df['los'] = [ pd.to_datetime(row['datetime']) -  pd.to_datetime(row['outcome_datetime']) for row in df ]
     df['days_old'] = pd.to_datetime(df['datetime']) -  pd.to_datetime(df['outcome_date_of_birth'])
     df['days_old'] = [ timedel.days for timedel in df['days_old']]
 
-    print(df['days_old'])
+    # print(df['days_old'])
 
-    los_value_counts = df['los'].value_counts()
-    print(los_value_counts[:10])
+    # los_value_counts = df['los'].value_counts()
+    # print(los_value_counts[:10])
 
     print(df.head())
 
+    # # # Modify Month year
+    #
+    # l = []
+    # for row in df['monthyear'].values:
+    #     l.append(datetime.strptime(row, '%d/%m/%Y %H:%M:%S %p').strftime("%Y%m"))
+    #
+    # df['monthyear'] = l
+    # print(df['monthyear'])
+    # l2= []
+    # for outmoyear in df['outcome_monthyear']:
+    #     if outmoyear is not None:
+    #         l2.append(datetime.strptime(outmoyear,'%d/%m/%Y %H:%M:%S %p').strftime("%Y%m"))
+    #     else:
+    #         l2.append(np.nan)
+    #
+    # df['month_year'] = l
+    # df['outcome_monthyear'] = l2
 
     # Modify animal type and save species
     df['species'] = df['animal_type']
@@ -72,10 +90,11 @@ if __name__ == '__main__':
 
     headers = ['intake_index', 'animal_id', 'name', 'datetime', 'monthyear', 'found_location',
      'intake_type', 'intake_condition', 'animal_type', 'sex_upon_intake',
-     'age_upon_intake', 'breed', 'color','los', 'outcome_index',
+     'age_upon_intake', 'breed', 'color', 'outcome_index',
      'outcome_animal_id', 'outcome_name', 'outcome_datetime', 'outcome_monthyear',
      'outcome_date_of_birth', 'outcome_type', 'outcome_subtype',
      'outcome_animal_type', 'sex_upon_outcome', 'age_upon_outcome',
-     'outcome_breed', 'outcome_color','species']
+     'outcome_breed', 'outcome_color','los','days_old','species']
 
     df.to_csv('animalsAAC_{}.csv'.format(datetime.now().strftime('%Y-%m-%d_%H_%M_%S')), index=False)
+    df.to_csv('animalsAAC.csv', index=False)

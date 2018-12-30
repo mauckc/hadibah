@@ -139,9 +139,9 @@ def homepage():
     if 'username' in session:
         print('Logged in as %s' %session['username'])
         """Home page for Hadibah with updated table"""
-        df, _ = readSC()
-        dfs = df.sort_values('impound_no', ascending=False)
-        cols = ['animal_id','animal_type','impound_no','intake_type','intake_subtype','intake_cond','outcome_type','outcome_subtype','outcome_cond','weight','intake_date','outcome_date','dob','primary_bree','secondary_','kennel_no','s_n_date','weight_1_week','due_out_date','location_1','location_1_date','location_2','location_2_date','los','days_old','los_1','los_2','age_s_n_date','weight_difference','in_to_due_out_date_diff','due_out_to_outcome_date_diff']
+        df, cols = readSC()
+        dfs = df.sort_values('animal_id', ascending=False)
+        # cols = ['animal_id','animal_type','impound_no','intake_type','intake_subtype','intake_cond','outcome_type','outcome_subtype','outcome_cond','weight','intake_date','outcome_date','dob','primary_bree','secondary_','kennel_no','s_n_date','weight_1_week','due_out_date','location_1','location_1_date','location_2','location_2_date','los','days_old','los_1','los_2','age_s_n_date','weight_difference','in_to_due_out_date_diff','due_out_to_outcome_date_diff']
         decimals = dict.fromkeys(cols, 2)
         dfs = dfs.round(decimals=decimals)
         dfs = dfs.to_dict('records')
@@ -153,7 +153,7 @@ def homepage():
 def animal_iddetail(animal_id=None):
     """Page with details on the individual system"""
     if animal_id:
-        df, _ = readSC()
+        df, cols = readSC()
         # t1, t2 = min(df['intake_date']), max(df['outcome_date'])
         t1, t2 = min(df['los']), max(df['los'])
         index = df['animal_id'] == animal_id
@@ -177,8 +177,8 @@ def animal_iddetail(animal_id=None):
             d.fillna('...', inplace=True)
             info = d.to_dict('records')
 
-            dfs = d.sort_values('impound_no', ascending=False)
-            cols = ['animal_id','animal_type','impound_no','intake_type','intake_subtype','intake_cond','outcome_type','outcome_subtype','outcome_cond','weight','intake_date','outcome_date','dob','primary_bree','secondary_','kennel_no','s_n_date','weight_1_week','due_out_date','location_1','location_1_date','location_2','location_2_date','los','days_old','los_1','los_2','age_s_n_date','weight_difference','in_to_due_out_date_diff','due_out_to_outcome_date_diff']
+            dfs = d.sort_values('animal_id', ascending=False)
+            # cols = ['animal_id','animal_type','impound_no','intake_type','intake_subtype','intake_cond','outcome_type','outcome_subtype','outcome_cond','weight','intake_date','outcome_date','dob','primary_bree','secondary_','kennel_no','s_n_date','weight_1_week','due_out_date','location_1','location_1_date','location_2','location_2_date','los','days_old','los_1','los_2','age_s_n_date','weight_difference','in_to_due_out_date_diff','due_out_to_outcome_date_diff']
             decimals = dict.fromkeys(cols, 2)
             dfs = dfs.round(decimals=decimals)
             dfs = dfs.to_dict('records')
@@ -420,10 +420,10 @@ def filter():
     if 'username' in session:
         field = request.args.get('field')
         value = request.args.get('value')
-        df, _ = readSC()
+        df, cols = readSC()
         filterdf = df[df[str(field)] == value]
-        filterdfs = filterdf.sort_values('impound_no', ascending=False)  # [:50]  # TODO: Remove the slicing!
-        cols = ['animal_id','animal_type','impound_no','intake_type','intake_subtype','intake_cond','outcome_type','outcome_subtype','outcome_cond','weight','intake_date','outcome_date','dob','primary_bree','secondary_','kennel_no','s_n_date','weight_1_week','due_out_date','location_1','location_1_date','location_2','location_2_date']
+        filterdfs = filterdf.sort_values('animal_id', ascending=False)  # [:50]  # TODO: Remove the slicing!
+        # cols = ['animal_id','animal_type','impound_no','intake_type','intake_subtype','intake_cond','outcome_type','outcome_subtype','outcome_cond','weight','intake_date','outcome_date','dob','primary_bree','secondary_','kennel_no','s_n_date','weight_1_week','due_out_date','location_1','location_1_date','location_2','location_2_date']
         decimals = dict.fromkeys(cols, 2)
         filterdfs = filterdfs.round(decimals=decimals)
         # df = df[(df['intake_type']!="DEAD")&(df['intake_subtype']!="DEAD")&(df['intake_cond']!="DEAD")&(df['intake_type']!="DISPOSAL")&(df['intake_subtype']!="DISPOSAL")&(df['intake_cond']!="DISPOSAL")&(df['intake_type']!="DECEASED")&(df['intake_subtype']!="DECEASED")&(df['intake_cond']!="DECEASED")]
@@ -459,9 +459,9 @@ def counts_plot():
     """Plot inventory over time"""
     if 'username' in session:
         df, columns = readSC()
-        dfs = df.sort_values('impound_no', ascending=False)
-        cols = ['animal_id','animal_type','impound_no','intake_type','intake_subtype','intake_cond','outcome_type','outcome_subtype','outcome_cond','weight','intake_date','outcome_date','dob','primary_bree','secondary_','kennel_no','s_n_date','weight_1_week','due_out_date','location_1','location_1_date','location_2','location_2_date','los','days_old','los_1','los_2','age_s_n_date','weight_difference','in_to_due_out_date_diff','due_out_to_outcome_date_diff']
-        decimals = dict.fromkeys(cols, 2)
+        dfs = df.sort_values('animal_id', ascending=False)
+        # cols = ['animal_id','animal_type','animal_id','intake_type','intake_subtype','intake_cond','outcome_type','outcome_subtype','outcome_cond','weight','intake_date','outcome_date','dob','primary_bree','secondary_','kennel_no','s_n_date','weight_1_week','due_out_date','location_1','location_1_date','location_2','location_2_date','los','days_old','los_1','los_2','age_s_n_date','weight_difference','in_to_due_out_date_diff','due_out_to_outcome_date_diff']
+        decimals = dict.fromkeys(columns, 2)
         dfs = dfs.round(decimals=decimals)
         dfs = dfs.to_dict('records')
         return plot_page_counts(df, columns, request, rows=dfs)
@@ -475,9 +475,9 @@ def counts_plot_filter():
         value = request.args.get('value')
         df, columns = readSC()
         filterdf = df[df[str(field)] == value]
-        dfs = filterdf.sort_values('impound_no', ascending=False)
-        cols = ['animal_id','animal_type','impound_no','intake_type','intake_subtype','intake_cond','outcome_type','outcome_subtype','outcome_cond','weight','intake_date','outcome_date','dob','primary_bree','secondary_','kennel_no','s_n_date','weight_1_week','due_out_date','location_1','location_1_date','location_2','location_2_date','los','days_old','los_1','los_2','age_s_n_date','weight_difference','in_to_due_out_date_diff','due_out_to_outcome_date_diff']
-        decimals = dict.fromkeys(cols, 2)
+        dfs = filterdf.sort_values('animal_id', ascending=False)
+        # cols = ['animal_id','animal_type','impound_no','intake_type','intake_subtype','intake_cond','outcome_type','outcome_subtype','outcome_cond','weight','intake_date','outcome_date','dob','primary_bree','secondary_','kennel_no','s_n_date','weight_1_week','due_out_date','location_1','location_1_date','location_2','location_2_date','los','days_old','los_1','los_2','age_s_n_date','weight_difference','in_to_due_out_date_diff','due_out_to_outcome_date_diff']
+        decimals = dict.fromkeys(columns, 2)
         dfs = dfs.round(decimals=decimals)
         dfs = dfs.to_dict('records')
         return plot_page_counts(filterdf, columns, request, field=field, value=value, rows=dfs)
@@ -489,9 +489,9 @@ def los_plot():
     """Plot inventory over time"""
     if 'username' in session:
         df, columns = readSC()
-        dfs = df.sort_values('impound_no', ascending=False)
-        cols = ['animal_id','animal_type','impound_no','intake_type','intake_subtype','intake_cond','outcome_type','outcome_subtype','outcome_cond','weight','intake_date','outcome_date','dob','primary_bree','secondary_','kennel_no','s_n_date','weight_1_week','due_out_date','location_1','location_1_date','location_2','location_2_date','los','days_old','los_1','los_2','age_s_n_date','weight_difference','in_to_due_out_date_diff','due_out_to_outcome_date_diff']
-        decimals = dict.fromkeys(cols, 2)
+        dfs = df.sort_values('animal_id', ascending=False)
+        # cols = ['animal_id','animal_type','impound_no','intake_type','intake_subtype','intake_cond','outcome_type','outcome_subtype','outcome_cond','weight','intake_date','outcome_date','dob','primary_bree','secondary_','kennel_no','s_n_date','weight_1_week','due_out_date','location_1','location_1_date','location_2','location_2_date','los','days_old','los_1','los_2','age_s_n_date','weight_difference','in_to_due_out_date_diff','due_out_to_outcome_date_diff']
+        decimals = dict.fromkeys(columns, 2)
         dfs = dfs.round(decimals=decimals)
         dfs = dfs.to_dict('records')
         return plot_page_los(df, columns, request, rows=dfs)
@@ -505,9 +505,9 @@ def los_plot_filter():
         value = request.args.get('value')
         df, columns = readSC()
         filterdf = df[df[str(field)] == value]
-        dfs = filterdf.sort_values('impound_no', ascending=False)
-        cols = ['animal_id','animal_type','impound_no','intake_type','intake_subtype','intake_cond','outcome_type','outcome_subtype','outcome_cond','weight','intake_date','outcome_date','dob','primary_bree','secondary_','kennel_no','s_n_date','weight_1_week','due_out_date','location_1','location_1_date','location_2','location_2_date','los','days_old','los_1','los_2','age_s_n_date','weight_difference','in_to_due_out_date_diff','due_out_to_outcome_date_diff']
-        decimals = dict.fromkeys(cols, 2)
+        dfs = filterdf.sort_values('animal_id', ascending=False)
+        # columns = ['animal_id','animal_type','impound_no','intake_type','intake_subtype','intake_cond','outcome_type','outcome_subtype','outcome_cond','weight','intake_date','outcome_date','dob','primary_bree','secondary_','kennel_no','s_n_date','weight_1_week','due_out_date','location_1','location_1_date','location_2','location_2_date','los','days_old','los_1','los_2','age_s_n_date','weight_difference','in_to_due_out_date_diff','due_out_to_outcome_date_diff']
+        decimals = dict.fromkeys(columns, 2)
         dfs = dfs.round(decimals=decimals)
         dfs = dfs.to_dict('records')
         return plot_page_los(filterdf, columns, request, field=field, value=value, rows=dfs)

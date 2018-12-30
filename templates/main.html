@@ -10,21 +10,28 @@
     {% for row in rows %}
         data.push([
           unescape('<a target="_blank" href="/animal_id/{{ row['animal_id'] }}"><b>{{ row['animal_id'] }}</b></a>'),
-          "{{ row['impound_no']}}",
+          "{{ row['intake_index'] }}",
           "{{ row['animal_type'] }}",
           "{{ row['intake_type'] }}",
-          "{{ row['intake_subtype'] }}",
-          "{{ row['intake_cond'] }}",
+          "{{ row['intake_condition'] }}",
+          "{{ row['name'] }}",
+          "{{ row['datetimme'] }}",
+          "{{ row['los'] }}",
+          "{{ row['days_old'] }}",
+          "{{ row['age_upon_intake'] }}",
+          "{{ row['breed'] }}",
+          "{{ row['color'] }}",
+          "{{ row['outcome_datetime'] }}",
           "{{ row['outcome_type'] }}",
           "{{ row['outcome_subtype'] }}",
-          "{{ row['outcome_cond']}}",
-          "{{ row['kennel_no']}}",
-          parseFloat("{{ row['weight'] }}"),
-          "{{ row['los']}}",
-          "{{ row['days_old']}}"
+          "{{ row['outcome_date_of_birth']}}",
+          "{{ row['outcome_animal_id']}}",
+          "{{ row['outcome_index'] }}",
+          "{{ row['outcome_name'] }}",
+          "{{ row['sex_upon_intake'] }}",
+          "{{ row['sex_upon_outcome'] }}"
           ]);
     {% endfor %}
-
     $('#sc-table').DataTable({
       data: data,
       deferRender: true,
@@ -32,7 +39,7 @@
       scrollY: 500,
       scrollCollapse: true,
       scroller: true,
-      order: [[ 0, "desc" ]]
+      order: [[ 1, "desc" ]]
     });
   });
 </script>
@@ -76,19 +83,27 @@
   <table id="sc-table" class="table table-hover table-responsive">
     <thead>
       <tr>
-        <th><label title="animal id">Animal ID</label></th>
-        <th><label title="impound no">Impound No.</label></th>
-        <th><label title="animal type">Animal Type</label></th>
-        <th><label title="intake type">Intake Type</label></th>
-        <th><label title="intake subtype">Intake Subtype</label></th>
-        <th><label title="intake condition">Intake Condition</label></th>
-        <th><label title="outcome type">Outcome Type</label></th>
-        <th><label title="outcome subtype">Outcome Subtype</label></th>
-        <th><label title="outcome condition">Outcome Condition</label></th>
-        <th><label title="kennel number">Kennel No.</label></th>
-        <th><label title="weight">Intake Weight</label></th>
-        <th><label title="los">Length of Stay</label></th>
-        <th><label title="days_old">Days Old</label></th>
+        <th><label title="animal_id">animal id</label></th>
+        <th><label title="intake_index"> intake index</label></th>
+        <th><label title="animal_type">animal type</label></th>
+        <th><label title="intake_type">intake type</label></th>
+        <th><label title="intake_condition">intake condition</label></th>
+        <th><label title="name">name</label></th>
+        <th><label title="datetime">intake datetime</label></th>
+        <th><label title="los">los</label></th>
+        <th><label title="days_old">days_old</label></th>
+        <th><label title="age_upon_intake">age_upon_intake</label></th>
+        <th><label title="breed">breed</label></th>
+        <th><label title="color">color</label></th>
+        <th><label title="outcome_datetime">outcome datetime</label></th>
+        <th><label title="outcome_type">outcome type</label></th>
+        <th><label title="outcome subtype">outcome subtype</label></th>
+        <th><label title="outcome_date_of_birth">outcome_date_of_birth</label></th>
+        <th><label title="outcome_animal_id">outcome_animal_id</label></th>
+        <th><label title="outcome index">outcome index</label></th>
+        <th><label title="outcome name">outcome_name</label></th>
+        <th><label title="sex_upon_intake">sex_upon_intake</label></th>
+        <th><label title="sex_upon_outcome">sex_upon_outcome</label></th>
       </tr>
     </thead>
   </table>
