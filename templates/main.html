@@ -1,104 +1,10 @@
 {% extends "template.html" %}
 
 {% block body %}
-<!-- <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/scroller/1.4.3/js/dataTables.scroller.min.js "></script>
-
-<script type="text/javascript">
-  $(document).ready(function() {
-    var data = [];
-    {% for row in rows %}
-        data.push([
-          unescape('<a target="_blank" href="/animal_id/{{ row['animal_id'] }}"><b>{{ row['animal_id'] }}</b></a>'),
-          "{{ row['intake_index'] }}",
-          "{{ row['name'] }}",
-          "{{ row['datetime'] }}",
-          "{{ row['intake_condition'] }}",
-          "{{ row['name'] }}",
-          "{{ row['datetimme'] }}",
-          "{{ row['los'] }}",
-          "{{ row['days_old'] }}",
-          "{{ row['age_upon_intake'] }}",
-          "{{ row['breed'] }}",
-          "{{ row['color'] }}",
-          "{{ row['outcome_datetime'] }}",
-          "{{ row['outcome_type'] }}",
-          "{{ row['outcome_subtype'] }}",
-          "{{ row['species']}}"
-          ]);
-    {% endfor %}
-    $('#sc-table').DataTable({
-      data: data,
-      deferRender: true,
-      scrollX: true,
-      scrollY: 500,
-      scrollCollapse: true,
-      scroller: true,
-      order: [[ 1, "desc" ]]
-    });
-  });
-</script>
- -->
-
-  <h1>Hadibah</h1>
-  <h3>Accelerating shelter data</h3>
-  <br>
-  <p>Enabling animal welfare organizations to utilize open-source informatics to influence policy changes and promote overall animal welfare</p>
-  <!-- <h3> custom filter: </h3>
-  <div class="input-group mb-2">
-    <form action="{{ url_for('filter') }}">
-      <input type="text" class="form-control" placeholder="i.e. animal_type" name="field" aria-label="field" aria-describedby="basic-addon1"><br>
-      <input type="text" class="form-control" placeholder="i.e. CAT" name="value" aria-label="value" aria-describedby="basic-addon2"><br><hr>
-      <button class="btn btn-info btn-sm" type="submit">Submit</button>
-    </form>
-  </div>
+<h1>Hadibah</h1>
+<h3>Accelerating shelter data</h3>
+<br>
+<p>Enabling animal welfare organizations and allies to utilize open-source informatics to promote overall animal welfare</p>
+<img src="static/plot_photo/actual-daily-animal-count-sample.JPG" alt="Actual Daily Animal Count" width="800" height="450">
 <hr>
-  <p> Filter by Animal Type:
-    <a class="btn btn-info btn-sm" href="{{ url_for('filter', field='species',value='CAT') }}">Cats</a>
-    <a class="btn btn-info btn-sm" href="{{ url_for('filter', field='species',value='DOG') }}">Dogs</a>
-    <a class="btn btn-info btn-sm" href="{{ url_for('filter', field='species',value='KITTEN') }}">Kittens</a>
-    <a class="btn btn-info btn-sm" href="{{ url_for('filter', field='species',value='PUPPY') }}">Puppies</a>
-  </p>
-
-  <p> Filter by Intake Sub-Type:
-    <a class="btn btn-primary btn-sm" href="{{ url_for('filter', field='intake_subtype',value='HEALTHY') }}">Healthy</a>
-    <a class="btn btn-primary btn-sm" href="{{ url_for('filter', field='intake_subtype',value='UNHEALTH') }}">Unhealthy</a>
-    <a class="btn btn-primary btn-sm" href="{{ url_for('filter', field='intake_subtype',value='MANAGEAB') }}">Manageable</a>
-    <a class="btn btn-primary btn-sm" href="{{ url_for('filter', field='intake_subtype',value='REHAB') }}">Rehabilitatable</a>
-  </p> -->
-
-  <!-- <p> Filter by Outcome Type:
-    <a class="btn btn-success btn-sm" href="{{ url_for('filter', field='outcome_type',value='ADOPTION') }}">Adoption</a>
-    <a class="btn btn-success btn-sm" href="{{ url_for('filter', field='outcome_type',value='RTO') }}">Return to Owner</a>
-    <a class="btn btn-success btn-sm" href="{{ url_for('filter', field='outcome_type',value='EUTH') }}">Euthanasia</a>
-    <a class="btn btn-success btn-sm" href="{{ url_for('filter', field='outcome_type',value='FOSTER-VO') }}">Foster Volunteer</a>
-  </p> -->
-<!-- </div> --> 
-
-<hr>
-<!-- <div class="col-lg-9"></div>
-  <table id="sc-table" class="table table-hover table-responsive">
-    <thead>
-      <tr>
-        <th><label title="animal_id">animal id</label></th>
-        <th><label title="intake_index"> intake index</label></th>
-        <th><label title="name">animal name</label></th>
-        <th><label title="datetime">datetime</label></th>
-        <th><label title="intake_condition">intake condition</label></th>
-        <th><label title="name">name</label></th>
-        <th><label title="datetime">intake datetime</label></th>
-        <th><label title="los">los</label></th>
-        <th><label title="days_old">days_old</label></th>
-        <th><label title="age_upon_intake">age_upon_intake</label></th>
-        <th><label title="breed">breed</label></th>
-        <th><label title="color">color</label></th>
-        <th><label title="outcome_datetime">outcome datetime</label></th>
-        <th><label title="outcome_type">outcome type</label></th>
-        <th><label title="outcome subtype">outcome subtype</label></th>
-        <th><label title="species">species</label></th>
-        <th><label title="outcome_date_of_birth">DOB</label></th>
-      </tr>
-    </thead>
-  </table>
-</div> -->
 {% endblock %}

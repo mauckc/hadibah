@@ -40,10 +40,10 @@ def barchart_counts( dataf, headers, n, numvals=16):
     y_pos = np.arange(len(keys))
     vals = cnts.values
     fig = plt.figure(figsize=(10,6))
-    plt.bar(y_pos, vals, align='center', alpha=0.5)
+    plt.bar(y_pos, vals, align='center', alpha=0.5, color=['red','blue','green','purple','orange','cyan','magenta'])
     plt.xticks(y_pos, keys)
-    plt.ylabel('Counts')
-    plt.title(headers[n] + ' breakdown')
+    plt.ylabel('Animal Count')
+    plt.title(headers[n].replace('_',' ').title() + ' Breakdown')
     plt.grid()
     # plot = fig_to_html(fig)
     return fig
@@ -187,7 +187,7 @@ def plot_page_counts(df, columns, request, field=None, value=None, rows=None):
             if requested_col not in columns:
                 return redirect(url_for('counts_plot'))
     else:
-        z = 'outcome_type'
+        z = 'species'
     # Does not work with NaN values!
     df = df.loc[:, {z}].dropna(axis=0)
     # print(df.head())
