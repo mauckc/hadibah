@@ -40,17 +40,17 @@ def barchart_counts( dataf, headers, n, numvals=16):
     y_pos = np.arange(len(keys))
     vals = cnts.values
     fig = plt.figure(figsize=(10,6))
-    plt.bar(y_pos, vals, align='center', alpha=0.5)
+    plt.bar(y_pos, vals, align='center', alpha=0.5, color=['red','blue','green','purple','orange','cyan','magenta'])
     plt.xticks(y_pos, keys)
-    plt.ylabel('Counts')
-    plt.title(headers[n] + ' breakdown')
+    plt.ylabel('Animal Count')
+    plt.title(headers[n].replace('_',' ').title() + ' Breakdown')
     plt.grid()
     # plot = fig_to_html(fig)
     return fig
 
 def getdailyinventory( day, dataf ):
-    dayinventory = dataf[(dataf.intake_date <= day) & (dataf.outcome_date > day)]
-    return dayinventory
+    dayinventory = dataf[(dataf.datetime < day) & (dataf.outcome_datetime > day)]
+    return len(dayinventory)
 
 # def dailyinventory( startdate, enddate, dataf ):
 #     date_format = "%Y-%m-%d"
@@ -67,8 +67,8 @@ def getdailyinventory( day, dataf ):
 
 def detail_plot(df, tlow, thigh):
 
-    hz1 = get_default(df['intake_date'].values[0], -2, float)
-    hz2 = get_default(df['outcome_date'].values[0], -1, float)
+    hz1 = get_default(df['datetime'].values[0], -2, float)
+    hz2 = get_default(df['outcome_datetime'].values[0], -1, float)
     color = get_default(df['los'].values[0], 5777, float)
     tlow = get_default(max(2500, tlow), 2500, int)
     thigh = get_default(min(8500, thigh), 8500, int)
@@ -137,7 +137,7 @@ def plot_page_mpld3(df, columns, request, field=None, value=None):
             if requested_col not in columns:
                 return redirect(url_for('sd'))
     else:
-        x1, x2, y1, y2, z = 'weight', 'los', 'los', 'age_s_n_date', 'days_old'
+        x1, x2, y1, y2, z = 'days_old', 'los', 'los', 'los', 'days_old'
 
     if field and value is None:
         field = 'all fields'
@@ -187,7 +187,7 @@ def plot_page_counts(df, columns, request, field=None, value=None, rows=None):
             if requested_col not in columns:
                 return redirect(url_for('counts_plot'))
     else:
-        z = 'outcome_type'
+        z = 'species'
     # Does not work with NaN values!
     df = df.loc[:, {z}].dropna(axis=0)
     # print(df.head())
@@ -263,28 +263,29 @@ def plot_page_inventory(df, columns, request, field=None, value=None):
     # current headers are:
     headers = list(df.columns.values)
     print('[Dimensions]: total ' + str(np.shape(df)) )
-    print('[Dimensions]: lost & found ' + str(np.shape(df[(df.intake_type == "LOST&FOUND")])))
-    print('[Dimensions]: dead and disposal intake ' + str(np.shape(df[(df.intake_type == "DEAD") | (df.intake_type == "DISPOSAL") | (df.intake_subtype == "DEAD") | (df.intake_subtype == "DISPOSAL")])) )
+    # print('[Dimensions]: lost & found ' + str(np.shape(df[(df.intake_type == "LOST&FOUND")])))
+    # print('[Dimensions]: dead and disposal intake ' + str(np.shape(df[(df.intake_type == "DEAD") | (df.intake_type == "Disposal") | (df.intake_subtype == "DEAD") | (df.intake_subtype == "DISPOSAL")])) )
     # Filter out LOST&FOUND group and DEAD intake types
-    df = df[(df.intake_type != "LOST&FOUND") & (df.intake_type != "DEAD") & (df.intake_subtype != "DEAD") & (df.intake_type != "DISPOSAL") & (df.intake_subtype != "DISPOSAL") & (df.intake_type != "DISPO REQ")]
+    df = df[(df.intake_type != "Disposal") & (df.outcome_type != "Disposal")]
     print('[Dimensions]: total after lost&found and dead removed ' + str(np.shape(df)) )
 
-    df = df[(df.animal_type == "CAT") | (df.animal_type == "DOG") | (df.animal_type == "KITTEN" ) | (df.animal_type == "PUPPY")]
+    df = df[(df.animal_type == "Cat") | (df.animal_type == "Dog") | (df.animal_type == "Kitten" ) | (df.animal_type == "Puppy")]
     print('[Dimensions]: CATs DOGs KITTENs or PUPPPYs selected ' + str(np.shape(df)) )
 
-    df = df[(df.outcome_date != "")]
+    df['outcome_datetime'] = df['outcome_datetime'].fillna('2019-08-15 11:01:00')
+    # df = df[(df.outcome_datetime != "") | (df.outcome_datetime.isnull())]
     print('[Dimensions]: total after still in shelter on data end-date removed ' + str(np.shape(df)) )
 
     print("[INFO] Filtered out Dead Intakes and Lost and Found Animals.")
-    catdf = df[(df.animal_type == "CAT")]
-    kittendf = df[(df.animal_type == "KITTEN")]
-    dogdf = df[(df.animal_type == "DOG")]
-    puppydf = df[(df.animal_type == "PUPPY")]
-    felinedf = df[(df.animal_type == "CAT") | (df.animal_type == "KITTEN")]
-    caninedf = df[(df.animal_type == "DOG") | (df.animal_type == "PUPPY")]
+    catdf = df[(df.animal_type == "Cat")]
+    kittendf = df[(df.animal_type == "Kitten")]
+    dogdf = df[(df.animal_type == "Dog")]
+    puppydf = df[(df.animal_type == "Puppy")]
+    felinedf = df[(df.animal_type == "Cat") | (df.animal_type == "Kitten")]
+    caninedf = df[(df.animal_type == "Dog") | (df.animal_type == "Puppy")]
 
-    dogmaxdate = dogdf['intake_date'].max()
-    dogmindate = dogdf['outcome_date'].min()
+    dogmaxdate = dogdf['datetime'].max()
+    dogmindate = dogdf['outcome_datetime'].min()
     daterange = pd.date_range(start=dogmindate, end=dogmaxdate)
     print("[INFO] Filtered by animal_type.")
     lasttime = nowtime
@@ -292,15 +293,15 @@ def plot_page_inventory(df, columns, request, field=None, value=None):
     deltatime = nowtime - lasttime
     print("[TIMING] data loaded in {} seconds.".format(deltatime))
 
-    inv = [len(getdailyinventory(str(day), df)) for day in daterange ]
-    invcat = [len(getdailyinventory(str(day), catdf)) for day in daterange ]
-    invkitten = [len(getdailyinventory(str(day), kittendf)) for day in daterange ]
-    invdog = [len(getdailyinventory(str(day), dogdf)) for day in daterange ]
-    invpuppy = [len(getdailyinventory(str(day), puppydf)) for day in daterange ]
+    # inv = [len(getdailyinventory(str(day), df)) for day in daterange ]
+    invcat = [getdailyinventory(str(day), catdf) for day in daterange ]
+    invkitten = [getdailyinventory(str(day), kittendf) for day in daterange ]
+    invdog = [getdailyinventory(str(day), dogdf) for day in daterange ]
+    invpuppy = [getdailyinventory(str(day), puppydf) for day in daterange ]
     # invfeline = [len(getdailyinventory(str(day), felinedf)) for day in daterange ]
     # invcanine = [len(getdailyinventory(str(day), caninedf)) for day in daterange ]
     #print dfinvcat['inventory'].values
-    tsinv = pd.Series(inv, index = daterange)
+    # tsinv = pd.Series(inv, index = daterange)
     tsinvcat = pd.Series(invcat, index = daterange)
     tsinvkitten = pd.Series(invkitten, index = daterange)
     tsinvdog = pd.Series(invdog, index = daterange)

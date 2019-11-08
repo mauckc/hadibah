@@ -14,19 +14,20 @@
 </div>
 
 <div class="col-lg-9">
-  <h1>Inventory</h1>
-  <p> Filter by Intake Sub-Type:
-    <a class="btn btn-primary btn-sm" href="{{ url_for('inventory_plot_filter', field='intake_subtype',value='HEALTHY') }}">Healthy</a>
-    <a class="btn btn-primary btn-sm" href="{{ url_for('inventory_plot_filter', field='intake_subtype',value='UNHEALTH') }}">Unhealthy</a>
-    <a class="btn btn-primary btn-sm" href="{{ url_for('inventory_plot_filter', field='intake_subtype',value='MANAGEAB') }}">Manageable</a>
-    <a class="btn btn-primary btn-sm" href="{{ url_for('inventory_plot_filter', field='intake_subtype',value='REHAB') }}">Rehabilitatable</a>
+  <h1>Actual Daily Animal Counts</h1>
+
+  <p> Filter by Animal Type:
+    <a class="btn btn-info btn-sm" href="{{ url_for('inventory_plot_filter', field='species',value='Cat') }}">Cats</a>
+    <a class="btn btn-info btn-sm" href="{{ url_for('inventory_plot_filter', field='species',value='Dog') }}">Dogs</a>
+    <!-- <a class="btn btn-info btn-sm" href="{{ url_for('inventory_plot_filter', field='species',value='Kitten') }}">Kittens</a>
+    <a class="btn btn-info btn-sm" href="{{ url_for('inventory_plot_filter', field='species',value='Puppy') }}">Puppies</a> -->
   </p>
 
   <p> Filter by Outcome Type:
-    <a class="btn btn-success btn-sm" href="{{ url_for('inventory_plot_filter', field='outcome_type',value='ADOPTION') }}">Adoption</a>
-    <a class="btn btn-success btn-sm" href="{{ url_for('inventory_plot_filter', field='outcome_type',value='RTO') }}">Return to Owner</a>
-    <a class="btn btn-success btn-sm" href="{{ url_for('inventory_plot_filter', field='outcome_type',value='EUTH') }}">Euthanasia</a>
-    <a class="btn btn-success btn-sm" href="{{ url_for('inventory_plot_filter', field='outcome_type',value='FOSTER-VO') }}">Foster Volunteer</a>
+    <a class="btn btn-success btn-sm" href="{{ url_for('inventory_plot_filter', field='outcome_type',value='Adoption') }}">Adoption</a>
+    <a class="btn btn-success btn-sm" href="{{ url_for('inventory_plot_filter', field='outcome_type',value='Return To Owner') }}">Return to Owner</a>
+    <a class="btn btn-success btn-sm" href="{{ url_for('inventory_plot_filter', field='outcome_type',value='Euthanasia') }}">Euthanasia</a>
+    <a class="btn btn-success btn-sm" href="{{ url_for('inventory_plot_filter', field='outcome_type',value='Transfer') }}">Transfer</a>
   </p>
   <hr>
   {{ plot|safe }}

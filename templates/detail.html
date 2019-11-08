@@ -14,7 +14,7 @@
           "{{ row['impound_no']}}",
           "{{ row['animal_type'] }}",
           "{{ row['intake_type'] }}",
-          "{{ row['intake_subtype'] }}",
+          // "{{ row['intake_subtype'] }}",
           "{{ row['intake_cond'] }}",
           "{{ row['outcome_type'] }}",
           "{{ row['outcome_subtype'] }}",
@@ -55,7 +55,7 @@
       <th><label title="impound no">Impound No.</label></th>
       <th><label title="animal type">Animal Type</label></th>
       <th><label title="intake type">Intake Type</label></th>
-      <th><label title="intake subtype">Intake Subtype</label></th>
+      <!-- <th><label title="intake subtype">Intake Subtype</label></th> -->
       <th><label title="intake condition">Intake Condition</label></th>
       <th><label title="outcome type">Outcome Type</label></th>
       <th><label title="outcome subtype">Outcome Subtype</label></th>
@@ -87,14 +87,14 @@
     {% for intake in info %}
     <h2>Intake information</h2>
     <a style="color:#9d63db">Impound Number: {{ intake['impound_no'] }}</a><br>
-    <a style="color:#d85fc1">Intake Date: {{ intake['intake_date'] }}</a><br>
-    <a style="color:#d85fc1">Intake Date: {{ intake['intake_date'] }}</a><br>
+    <a style="color:#d85fc1">Intake Date: {{ intake['datetime'] }}</a><br>
+    <a style="color:#d85fc1">Intake Date: {{ intake['datetime'] }}</a><br>
     <a style="color:#e562b2">Intake Type: {{ intake['intake_type'] }} </a><br>
-    <a style="color:#e7658d">Intake Subtype: {{ intake['intake_subtype'] }} </a><br>
+    <!-- <a style="color:#e7658d">Intake Subtype: {{ intake['intake_subtype'] }} </a><br> -->
     <a style="color:#9d63db">Intake Condition: {{ intake['intake_condition'] }}</a><br><br>
 
     <h2>Outcome informations</h2>
-    <a style="color:#d85fc1">Outcome Date: {{ intake['outcome_date'] }}</a><br>
+    <a style="color:#d85fc1">Outcome Date: {{ intake['outcome_datetime'] }}</a><br>
     <a style="color:#e562b2">Outcome Type: {{ intake['outcome_type'] }} </a><br>
     <a style="color:#e7658d">Outcome Subtype: {{ intake['outcome_subtype'] }}</a><br>
     <a style="color:#d85fc1">Outcome Condition: {{ intake['outcome_condition'] }} </a><br><br>

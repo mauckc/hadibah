@@ -136,49 +136,36 @@ def show_entries():
 
 @app.route('/')
 def homepage():
-    if 'username' in session:
-        print('Logged in as %s' %session['username'])
-        """Home page for Hadibah with updated table"""
-        df, _ = readSC()
-        dfs = df.sort_values('impound_no', ascending=False)
-        cols = ['animal_id','animal_type','impound_no','intake_type','intake_subtype','intake_cond','outcome_type','outcome_subtype','outcome_cond','weight','intake_date','outcome_date','dob','primary_bree','secondary_','kennel_no','s_n_date','weight_1_week','due_out_date','location_1','location_1_date','location_2','location_2_date','los','days_old','los_1','los_2','age_s_n_date','weight_difference','in_to_due_out_date_diff','due_out_to_outcome_date_diff']
-        decimals = dict.fromkeys(cols, 2)
-        dfs = dfs.round(decimals=decimals)
-        dfs = dfs.to_dict('records')
-        return render_template('main.html', rows=dfs)
-    else:
-        return redirect(url_for("login"))
+    # print('Logged in as %s' %session['username'])
+    """Home page for Hadibah with updated table"""
+    # df, cols = readSC()
+    # dfs = df.sort_values('animal_id', ascending=False)
+    # # cols = ['animal_id','animal_type','impound_no','intake_type','intake_subtype','intake_cond','outcome_type','outcome_subtype','outcome_cond','weight','intake_date','outcome_date','dob','primary_bree','secondary_','kennel_no','s_n_date','weight_1_week','due_out_date','location_1','location_1_date','location_2','location_2_date','los','days_old','los_1','los_2','age_s_n_date','weight_difference','in_to_due_out_date_diff','due_out_to_outcome_date_diff']
+    # decimals = dict.fromkeys(cols, 2)
+    # dfs = dfs.round(decimals=decimals)
+    # dfs = dfs.to_dict('records')
+    return render_template('main.html')#, rows=dfs)
 
 @app.route('/animal_id/<string:animal_id>/')
 def animal_iddetail(animal_id=None):
-    """Page with details on the individual system"""
+    """Page with details on the individual animal"""
     if animal_id:
-        df, _ = readSC()
+        df, cols = readSC()
         # t1, t2 = min(df['intake_date']), max(df['outcome_date'])
         t1, t2 = min(df['los']), max(df['los'])
         index = df['animal_id'] == animal_id
         d = df.loc[index, :].copy()
         if len(d):
             show_intake = bool(~d['los'].isnull().values[0])
-            # if show_intake:
-            #     s = d['los'].values
-            #     s = [si.decode() if isinstance(si, bytes) else si for si in s]
-            #     s = ['{} {}'.format(si[:-2], si[-1].lower()) for si in s]
-                #d['exolink'] = ['http://exointake.eu/catalog/{}/'.format(si.lower().replace(' ', '_')) for si in s]
-
-            # d['lum'] = (d.teff/5777)**4 * (d.mass/((10**d.logg)/(10**4.44)))**2
-            # d['hz1'] = round(hz(d['teff'].values[0], d['lum'].values[0], model=2), 5)
-            # d['hz2'] = round(hz(d['teff'].values[0], d['lum'].values[0], model=4), 5)
-
-            if len(d) == sum(d['intake_date'].isnull()):
+            if len(d) == sum(d['datetime'].isnull()):
                 plot = None
             else:
                 plot = detail_plot(d, t1, t2)
             d.fillna('...', inplace=True)
             info = d.to_dict('records')
 
-            dfs = d.sort_values('impound_no', ascending=False)
-            cols = ['animal_id','animal_type','impound_no','intake_type','intake_subtype','intake_cond','outcome_type','outcome_subtype','outcome_cond','weight','intake_date','outcome_date','dob','primary_bree','secondary_','kennel_no','s_n_date','weight_1_week','due_out_date','location_1','location_1_date','location_2','location_2_date','los','days_old','los_1','los_2','age_s_n_date','weight_difference','in_to_due_out_date_diff','due_out_to_outcome_date_diff']
+            dfs = d.sort_values('animal_id', ascending=False)
+            # cols = ['animal_id','animal_type','impound_no','intake_type','intake_subtype','intake_cond','outcome_type','outcome_subtype','outcome_cond','weight','intake_date','outcome_date','dob','primary_bree','secondary_','kennel_no','s_n_date','weight_1_week','due_out_date','location_1','location_1_date','location_2','location_2_date','los','days_old','los_1','los_2','age_s_n_date','weight_difference','in_to_due_out_date_diff','due_out_to_outcome_date_diff']
             decimals = dict.fromkeys(cols, 2)
             dfs = dfs.round(decimals=decimals)
             dfs = dfs.to_dict('records')
@@ -230,6 +217,7 @@ def login():
         if [[request.form['username']],[request.form['password']]] not in usernames_passwords:
             error = 'Invalid username and/or password'
             flash('Sign up if you do not already have an account')
+            return redirect(url_for('homepage'))
         else:
             session['username'] = request.form['username']
             session['logged_in'] = True
@@ -306,30 +294,28 @@ def logout():
     # session.pop('admin', False)
     session['admin'] = False
     flash('You were logged out')
-    return redirect(url_for('show_entries'))
+    return redirect(url_for('homepage'))
+    # return redirect(url_for('show_entries'))
 
 @app.route('/uploads', methods=['GET','POST'])
 def upload_file():
-    if 'username' in session:
-        if request.method == 'POST':
-            # check if the post request has the file part
-            if 'file' not in request.files:
-                flash('No file part')
-                return redirect(request.url)
-            file = request.files['file']
-            # if user does not select file, browser also
-            # submit an empty part without filename
-            if file.filename == '':
-                flash('No selected file')
-                return redirect(request.url)
-            if file and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                return redirect(url_for('upload_file',
-                                        filename=filename))
-        return render_template('upload.html')
-    else:
-        return redirect(url_for("login"))
+    if request.method == 'POST':
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+        # if user does not select file, browser also
+        # submit an empty part without filename
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return redirect(url_for('upload_file',
+                                    filename=filename))
+    return render_template('upload.html')
 
 app.add_url_rule('/uploads/<filename>', 'uploaded_file',
                  build_only=True)
@@ -417,124 +403,95 @@ def sign_up():
 # :5000/filter?field=alex&value=pw1
 @app.route('/filter/',methods=['GET','POST'])
 def filter():
-    if 'username' in session:
-        field = request.args.get('field')
-        value = request.args.get('value')
-        df, _ = readSC()
-        filterdf = df[df[str(field)] == value]
-        filterdfs = filterdf.sort_values('impound_no', ascending=False)  # [:50]  # TODO: Remove the slicing!
-        cols = ['animal_id','animal_type','impound_no','intake_type','intake_subtype','intake_cond','outcome_type','outcome_subtype','outcome_cond','weight','intake_date','outcome_date','dob','primary_bree','secondary_','kennel_no','s_n_date','weight_1_week','due_out_date','location_1','location_1_date','location_2','location_2_date']
-        decimals = dict.fromkeys(cols, 2)
-        filterdfs = filterdfs.round(decimals=decimals)
-        # df = df[(df['intake_type']!="DEAD")&(df['intake_subtype']!="DEAD")&(df['intake_cond']!="DEAD")&(df['intake_type']!="DISPOSAL")&(df['intake_subtype']!="DISPOSAL")&(df['intake_cond']!="DISPOSAL")&(df['intake_type']!="DECEASED")&(df['intake_subtype']!="DECEASED")&(df['intake_cond']!="DECEASED")]
-        filterdfs = filterdfs.to_dict('records')
-        return render_template('main.html', rows=filterdfs)
-    else:
-        flash('Sign up if you do not already have an account')
-        return redirect(url_for('login'))
+    field = request.args.get('field')
+    value = request.args.get('value')
+    df, cols = readSC()
+    filterdf = df[df[str(field)] == value]
+    filterdfs = filterdf.sort_values('animal_id', ascending=False)  # [:50]  # TODO: Remove the slicing!
+    # cols = ['animal_id','animal_type','impound_no','intake_type','intake_subtype','intake_cond','outcome_type','outcome_subtype','outcome_cond','weight','intake_date','outcome_date','dob','primary_bree','secondary_','kennel_no','s_n_date','weight_1_week','due_out_date','location_1','location_1_date','location_2','location_2_date']
+    decimals = dict.fromkeys(cols, 2)
+    filterdfs = filterdfs.round(decimals=decimals)
+    # df = df[(df['intake_type']!="DEAD")&(df['intake_subtype']!="DEAD")&(df['intake_cond']!="DEAD")&(df['intake_type']!="DISPOSAL")&(df['intake_subtype']!="DISPOSAL")&(df['intake_cond']!="DISPOSAL")&(df['intake_type']!="DECEASED")&(df['intake_subtype']!="DECEASED")&(df['intake_cond']!="DECEASED")]
+    filterdfs = filterdfs.to_dict('records')
+    return render_template('main.html', rows=filterdfs)
 
 @app.route("/linked/", methods=['GET', 'POST'])
 def linked_plot():
     """Plot inventory over time"""
-    if 'username' in session:
-        df, columns = readSC()
-        # print(", ".join(((df, columns))))
-        return plot_page_mpld3(df, columns, request)
-    else:
-        return redirect(url_for('login'))
+    df, columns = readSC()
+    # print(", ".join(((df, columns))))
+    return plot_page_mpld3(df, columns, request)
 
 @app.route('/linked-filter/',methods=['GET','POST'])
 def linked_plot_filter():
-    if 'username' in session:
-        field = request.args.get('field')
-        value = request.args.get('value')
-        df, columns = readSC()
-        filterdf = df[df[str(field)] == value]
-        return plot_page_mpld3(filterdf, columns, request, field=field, value=value)
-    else:
-        return redirect(url_for('login'))
+    field = request.args.get('field')
+    value = request.args.get('value')
+    df, columns = readSC()
+    filterdf = df[df[str(field)] == value]
+    return plot_page_mpld3(filterdf, columns, request, field=field, value=value)
 
 @app.route("/counts/", methods=['GET', 'POST'])
 def counts_plot():
-    """Plot inventory over time"""
-    if 'username' in session:
-        df, columns = readSC()
-        dfs = df.sort_values('impound_no', ascending=False)
-        cols = ['animal_id','animal_type','impound_no','intake_type','intake_subtype','intake_cond','outcome_type','outcome_subtype','outcome_cond','weight','intake_date','outcome_date','dob','primary_bree','secondary_','kennel_no','s_n_date','weight_1_week','due_out_date','location_1','location_1_date','location_2','location_2_date','los','days_old','los_1','los_2','age_s_n_date','weight_difference','in_to_due_out_date_diff','due_out_to_outcome_date_diff']
-        decimals = dict.fromkeys(cols, 2)
-        dfs = dfs.round(decimals=decimals)
-        dfs = dfs.to_dict('records')
-        return plot_page_counts(df, columns, request, rows=dfs)
-    else:
-        return redirect(url_for('login'))
+    """Plot counts bar graphs"""
+    df, columns = readSC()
+    dfs = df.sort_values('animal_id', ascending=False)
+    # cols = ['animal_id','animal_type','animal_id','intake_type','intake_subtype','intake_cond','outcome_type','outcome_subtype','outcome_cond','weight','intake_date','outcome_date','dob','primary_bree','secondary_','kennel_no','s_n_date','weight_1_week','due_out_date','location_1','location_1_date','location_2','location_2_date','los','days_old','los_1','los_2','age_s_n_date','weight_difference','in_to_due_out_date_diff','due_out_to_outcome_date_diff']
+    decimals = dict.fromkeys(columns, 2)
+    dfs = dfs.round(decimals=decimals)
+    dfs = dfs.to_dict('records')
+    return plot_page_counts(df, columns, request, rows=dfs)
 
 @app.route('/counts-filter/',methods=['GET','POST'])
 def counts_plot_filter():
-    if 'username' in session:
-        field = request.args.get('field')
-        value = request.args.get('value')
-        df, columns = readSC()
-        filterdf = df[df[str(field)] == value]
-        dfs = filterdf.sort_values('impound_no', ascending=False)
-        cols = ['animal_id','animal_type','impound_no','intake_type','intake_subtype','intake_cond','outcome_type','outcome_subtype','outcome_cond','weight','intake_date','outcome_date','dob','primary_bree','secondary_','kennel_no','s_n_date','weight_1_week','due_out_date','location_1','location_1_date','location_2','location_2_date','los','days_old','los_1','los_2','age_s_n_date','weight_difference','in_to_due_out_date_diff','due_out_to_outcome_date_diff']
-        decimals = dict.fromkeys(cols, 2)
-        dfs = dfs.round(decimals=decimals)
-        dfs = dfs.to_dict('records')
-        return plot_page_counts(filterdf, columns, request, field=field, value=value, rows=dfs)
-    else:
-        return redirect(url_for('login'))
+    field = request.args.get('field')
+    value = request.args.get('value')
+    df, columns = readSC()
+    filterdf = df[df[str(field)] == value]
+    dfs = filterdf.sort_values('animal_id', ascending=False)
+    decimals = dict.fromkeys(columns, 2)
+    dfs = dfs.round(decimals=decimals)
+    dfs = dfs.to_dict('records')
+    return plot_page_counts(filterdf, columns, request, field=field, value=value, rows=dfs)
 
 @app.route("/length-of-stay/", methods=['GET', 'POST'])
 def los_plot():
     """Plot inventory over time"""
-    if 'username' in session:
-        df, columns = readSC()
-        dfs = df.sort_values('impound_no', ascending=False)
-        cols = ['animal_id','animal_type','impound_no','intake_type','intake_subtype','intake_cond','outcome_type','outcome_subtype','outcome_cond','weight','intake_date','outcome_date','dob','primary_bree','secondary_','kennel_no','s_n_date','weight_1_week','due_out_date','location_1','location_1_date','location_2','location_2_date','los','days_old','los_1','los_2','age_s_n_date','weight_difference','in_to_due_out_date_diff','due_out_to_outcome_date_diff']
-        decimals = dict.fromkeys(cols, 2)
-        dfs = dfs.round(decimals=decimals)
-        dfs = dfs.to_dict('records')
-        return plot_page_los(df, columns, request, rows=dfs)
-    else:
-        return redirect(url_for('login'))
+    df, columns = readSC()
+    dfs = df.sort_values('animal_id', ascending=False)
+    # cols = ['animal_id','animal_type','impound_no','intake_type','intake_subtype','intake_cond','outcome_type','outcome_subtype','outcome_cond','weight','intake_date','outcome_date','dob','primary_bree','secondary_','kennel_no','s_n_date','weight_1_week','due_out_date','location_1','location_1_date','location_2','location_2_date','los','days_old','los_1','los_2','age_s_n_date','weight_difference','in_to_due_out_date_diff','due_out_to_outcome_date_diff']
+    decimals = dict.fromkeys(columns, 2)
+    dfs = dfs.round(decimals=decimals)
+    dfs = dfs.to_dict('records')
+    return plot_page_los(df, columns, request, rows=dfs)
 
 @app.route('/length-of-stay-filter/',methods=['GET','POST'])
 def los_plot_filter():
-    if 'username' in session:
-        field = request.args.get('field')
-        value = request.args.get('value')
-        df, columns = readSC()
-        filterdf = df[df[str(field)] == value]
-        dfs = filterdf.sort_values('impound_no', ascending=False)
-        cols = ['animal_id','animal_type','impound_no','intake_type','intake_subtype','intake_cond','outcome_type','outcome_subtype','outcome_cond','weight','intake_date','outcome_date','dob','primary_bree','secondary_','kennel_no','s_n_date','weight_1_week','due_out_date','location_1','location_1_date','location_2','location_2_date','los','days_old','los_1','los_2','age_s_n_date','weight_difference','in_to_due_out_date_diff','due_out_to_outcome_date_diff']
-        decimals = dict.fromkeys(cols, 2)
-        dfs = dfs.round(decimals=decimals)
-        dfs = dfs.to_dict('records')
-        return plot_page_los(filterdf, columns, request, field=field, value=value, rows=dfs)
-    else:
-        return redirect(url_for('login'))
+    field = request.args.get('field')
+    value = request.args.get('value')
+    df, columns = readSC()
+    filterdf = df[df[str(field)] == value]
+    dfs = filterdf.sort_values('animal_id', ascending=False)
+    # columns = ['animal_id','animal_type','impound_no','intake_type','intake_subtype','intake_cond','outcome_type','outcome_subtype','outcome_cond','weight','intake_date','outcome_date','dob','primary_bree','secondary_','kennel_no','s_n_date','weight_1_week','due_out_date','location_1','location_1_date','location_2','location_2_date','los','days_old','los_1','los_2','age_s_n_date','weight_difference','in_to_due_out_date_diff','due_out_to_outcome_date_diff']
+    decimals = dict.fromkeys(columns, 2)
+    dfs = dfs.round(decimals=decimals)
+    dfs = dfs.to_dict('records')
+    return plot_page_los(filterdf, columns, request, field=field, value=value, rows=dfs)
 
 @app.route("/inventory/", methods=['GET', 'POST'])
 def inventory_plot():
     """Plot inventory over time"""
-    if 'username' in session:
-        df, columns = readSC()
-        return plot_page_inventory(df, columns, request)
-    else:
-        return redirect(url_for('login'))
+    df, columns = readSC()
+    return plot_page_inventory(df, columns, request)
 
 @app.route('/inventory-filter/',methods=['GET','POST'])
 def inventory_plot_filter():
-    if 'username' in session:
-        field = request.args.get('field')
-        value = request.args.get('value')
-        # print(", ".join((field, value)))
-        df, columns = readSC()
-        filterdf = df[df[str(field)] == value]
-        # filterdfs = filterdf.sort_values('impound_no', ascending=False)  # [:50]  # TODO: Remove the slicing!
-        return plot_page_inventory(filterdf, columns, request, field=field, value=value)
-    else:
-        return redirect(url_for('login'))
+    field = request.args.get('field')
+    value = request.args.get('value')
+    # print(", ".join((field, value)))
+    df, columns = readSC()
+    filterdf = df[df[str(field)] == value]
+    # filterdfs = filterdf.sort_values('impound_no', ascending=False)  # [:50]  # TODO: Remove the slicing!
+    return plot_page_inventory(filterdf, columns, request, field=field, value=value)
 
 if __name__=='__main__':
     app.run(debug=True)
