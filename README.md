@@ -1,7 +1,8 @@
 # hadibah
-animal data visualization
+Accelerating Shelter Data
 
 [Hadibah](http://www.hadibah.com)
+Building an environment for animal welfare organizations and allies to utilize open-source informatics to promote overall animal welfare
 
 ## Setup
 
