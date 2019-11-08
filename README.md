@@ -1,16 +1,16 @@
 # hadibah
-Accelerating Shelter Data
+animal welfare data informatics
 
 [Hadibah](http://www.hadibah.com)
-Building an environment for animal welfare organizations and allies to utilize open-source informatics to promote overall animal welfare
 
-# This branch will be used to develop the live-data integration available from Austin Animal Center.
+# live-data integration
 ## Austin Animal Center
 
 [Main Webpage](http://www.austintexas.gov/department/aac)
 [Austin Animal Center Intakes](https://data.austintexas.gov/Health-and-Community-Services/Austin-Animal-Center-Intakes/wter-evkm)
 [Austin Animal Center Outcomes](https://data.austintexas.gov/Health-and-Community-Services/Austin-Animal-Center-Outcomes/9t4d-g238)
 [Austin Animal Center Stray Map](https://data.austintexas.gov/Health-and-Community-Services/Austin-Animal-Center-Stray-Map/kz4x-q9k5)
+
 
 ### Pet Harbor Integration for Images
 
@@ -36,9 +36,3 @@ http://petharbor.com/pet.asp?uaid=ASTN.A786253
 
 [PDF Report Sample for Austin Texas](http://www.austintexas.gov/sites/default/files/files/Animal_Services/Monthly_Reports/CYReport2017.pdf)
 
-## Setup
-
-Install requirements to lib folder if not going to load them in GAE
-```
-pip3 install -t lib -r requirements.txt
-```
