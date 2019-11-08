@@ -11,16 +11,14 @@
     {% for row in rows %}
         data.push([
           unescape('<a target="_blank" href="/animal_id/{{ row['animal_id'] }}"><b>{{ row['animal_id'] }}</b></a>'),
-          "{{ row['outcome_datetime']}}",
-          "{{ row['animal_type'] }}",
+          "{{ row['datetime']}}",
+          "{{ row['species'] }}",
           "{{ row['intake_type'] }}",
-          "{{ row['intake_subtype'] }}",
-          "{{ row['intake_condiition'] }}",
+          "{{ row['intake_condition'] }}",
           "{{ row['outcome_type'] }}",
           "{{ row['outcome_subtype'] }}",
-          "{{ row['outcome_cond']}}",
-          "{{ row['kennel_no']}}",
-          parseFloat("{{ row['weight'] }}"),
+          "{{ row['outcome_color']}}",
+          "{{ row['outcome_datetime']}}",
           "{{ row['los']}}",
           "{{ row['days_old']}}"
           ]);
@@ -33,7 +31,7 @@
       scrollY: 500,
       scrollCollapse: true,
       scroller: true,
-      order: [[ 0, "desc" ]]
+      order: [[ 0, "asc" ]]
     });
   });
 </script>
@@ -71,26 +69,18 @@
 <div class="col-lg-9">
   <h1>counts</h1>
 
-
   <p> Filter by Animal Type:
-    <a class="btn btn-info btn-sm" href="{{ url_for('counts_plot_filter', field='animal_type',value='CAT') }}">Cats</a>
-    <a class="btn btn-info btn-sm" href="{{ url_for('counts_plot_filter', field='animal_type',value='DOG') }}">Dogs</a>
-    <a class="btn btn-info btn-sm" href="{{ url_for('counts_plot_filter', field='animal_type',value='KITTEN') }}">Kittens</a>
-    <a class="btn btn-info btn-sm" href="{{ url_for('counts_plot_filter', field='animal_type',value='PUPPY') }}">Puppies</a>
-  </p>
-
-  <p> Filter by Intake Sub-Type:
-    <a class="btn btn-primary btn-sm" href="{{ url_for('counts_plot_filter', field='intake_subtype',value='HEALTHY') }}">Healthy</a>
-    <a class="btn btn-primary btn-sm" href="{{ url_for('counts_plot_filter', field='intake_subtype',value='UNHEALTH') }}">Unhealthy</a>
-    <a class="btn btn-primary btn-sm" href="{{ url_for('counts_plot_filter', field='intake_subtype',value='MANAGEAB') }}">Manageable</a>
-    <a class="btn btn-primary btn-sm" href="{{ url_for('counts_plot_filter', field='intake_subtype',value='REHAB') }}">Rehabilitatable</a>
+    <a class="btn btn-info btn-sm" href="{{ url_for('counts_plot_filter', field='species',value='Cat') }}">Cats</a>
+    <a class="btn btn-info btn-sm" href="{{ url_for('counts_plot_filter', field='species',value='Dog') }}">Dogs</a>
+    <!-- <a class="btn btn-info btn-sm" href="{{ url_for('counts_plot_filter', field='species',value='Kitten') }}">Kittens</a>
+    <a class="btn btn-info btn-sm" href="{{ url_for('counts_plot_filter', field='species',value='Puppy') }}">Puppies</a> -->
   </p>
 
   <p> Filter by Outcome Type:
-    <a class="btn btn-success btn-sm" href="{{ url_for('counts_plot_filter', field='outcome_type',value='ADOPTION') }}">Adoption</a>
-    <a class="btn btn-success btn-sm" href="{{ url_for('counts_plot_filter', field='outcome_type',value='RTO') }}">Return to Owner</a>
-    <a class="btn btn-success btn-sm" href="{{ url_for('counts_plot_filter', field='outcome_type',value='EUTH') }}">Euthanasia</a>
-    <a class="btn btn-success btn-sm" href="{{ url_for('counts_plot_filter', field='outcome_type',value='FOSTER-VO') }}">Foster Volunteer</a>
+    <a class="btn btn-success btn-sm" href="{{ url_for('counts_plot_filter', field='outcome_type',value='Adoption') }}">Adoption</a>
+    <a class="btn btn-success btn-sm" href="{{ url_for('counts_plot_filter', field='outcome_type',value='Return To Owner') }}">Return to Owner</a>
+    <a class="btn btn-success btn-sm" href="{{ url_for('counts_plot_filter', field='outcome_type',value='Euthanasia') }}">Euthanasia</a>
+    <a class="btn btn-success btn-sm" href="{{ url_for('counts_plot_filter', field='outcome_type',value='Transfer') }}">Transfer</a>
   </p>
   <hr>
   {{ plot|safe }}
@@ -101,17 +91,15 @@
   <table id="sc-table" class="table table-hover table-responsive">
     <thead>
       <tr>
-        <th><label title="animal id">Animal ID</label></th>
-        <th><label title="outcome_datetime">outcome datetime</label></th>
-        <th><label title="animal type">Animal Type</label></th>
-        <th><label title="intake type">Intake Type</label></th>
-        <th><label title="intake subtype">Intake Subtype</label></th>
-        <th><label title="intake condition">Intake Condition</label></th>
-        <th><label title="outcome type">Outcome Type</label></th>
-        <th><label title="outcome subtype">Outcome Subtype</label></th>
-        <th><label title="outcome condition">Outcome Condition</label></th>
-        <th><label title="kennel number">Kennel No.</label></th>
-        <th><label title="weight">Intake Weight</label></th>
+        <th><label title="animal_id">Animal ID</label></th>
+        <th><label title="datetime">Intake Date</label></th>
+        <th><label title="species">Species</label></th>
+        <th><label title="intake_type">Intake Type</label></th>
+        <th><label title="intake_condition">Intake Condition</label></th>
+        <th><label title="outcome_type">Outcome Type</label></th>
+        <th><label title="outcome_subtype">Outcome Subtype</label></th>
+        <th><label title="outcome_color">Color</label></th>
+        <th><label title="outcome_datetime">Outcome Date</label></th>
         <th><label title="los">Length of Stay</label></th>
         <th><label title="days_old">Days Old</label></th>
       </tr>

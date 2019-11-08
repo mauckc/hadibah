@@ -1,7 +1,7 @@
 {% extends "template.html" %}
 
 {% block body %}
-<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+<!-- <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/scroller/1.4.3/js/dataTables.scroller.min.js "></script>
 
 <script type="text/javascript">
@@ -11,8 +11,8 @@
         data.push([
           unescape('<a target="_blank" href="/animal_id/{{ row['animal_id'] }}"><b>{{ row['animal_id'] }}</b></a>'),
           "{{ row['intake_index'] }}",
-          "{{ row['animal_type'] }}",
-          "{{ row['intake_type'] }}",
+          "{{ row['name'] }}",
+          "{{ row['datetime'] }}",
           "{{ row['intake_condition'] }}",
           "{{ row['name'] }}",
           "{{ row['datetimme'] }}",
@@ -24,12 +24,7 @@
           "{{ row['outcome_datetime'] }}",
           "{{ row['outcome_type'] }}",
           "{{ row['outcome_subtype'] }}",
-          "{{ row['outcome_date_of_birth']}}",
-          "{{ row['outcome_animal_id']}}",
-          "{{ row['outcome_index'] }}",
-          "{{ row['outcome_name'] }}",
-          "{{ row['sex_upon_intake'] }}",
-          "{{ row['sex_upon_outcome'] }}"
+          "{{ row['species']}}"
           ]);
     {% endfor %}
     $('#sc-table').DataTable({
@@ -43,12 +38,13 @@
     });
   });
 </script>
-
+ -->
 
   <h1>Hadibah</h1>
-  <h3>Accelerating animal data</h3>
-
-  <h3> custom filter: </h3>
+  <h3>Accelerating shelter data</h3>
+  <br>
+  <p>Enabling animal welfare organizations to utilize open-source informatics to influence policy changes and promote overall animal welfare</p>
+  <!-- <h3> custom filter: </h3>
   <div class="input-group mb-2">
     <form action="{{ url_for('filter') }}">
       <input type="text" class="form-control" placeholder="i.e. animal_type" name="field" aria-label="field" aria-describedby="basic-addon1"><br>
@@ -58,10 +54,10 @@
   </div>
 <hr>
   <p> Filter by Animal Type:
-    <a class="btn btn-info btn-sm" href="{{ url_for('filter', field='animal_type',value='CAT') }}">Cats</a>
-    <a class="btn btn-info btn-sm" href="{{ url_for('filter', field='animal_type',value='DOG') }}">Dogs</a>
-    <a class="btn btn-info btn-sm" href="{{ url_for('filter', field='animal_type',value='KITTEN') }}">Kittens</a>
-    <a class="btn btn-info btn-sm" href="{{ url_for('filter', field='animal_type',value='PUPPY') }}">Puppies</a>
+    <a class="btn btn-info btn-sm" href="{{ url_for('filter', field='species',value='CAT') }}">Cats</a>
+    <a class="btn btn-info btn-sm" href="{{ url_for('filter', field='species',value='DOG') }}">Dogs</a>
+    <a class="btn btn-info btn-sm" href="{{ url_for('filter', field='species',value='KITTEN') }}">Kittens</a>
+    <a class="btn btn-info btn-sm" href="{{ url_for('filter', field='species',value='PUPPY') }}">Puppies</a>
   </p>
 
   <p> Filter by Intake Sub-Type:
@@ -69,24 +65,25 @@
     <a class="btn btn-primary btn-sm" href="{{ url_for('filter', field='intake_subtype',value='UNHEALTH') }}">Unhealthy</a>
     <a class="btn btn-primary btn-sm" href="{{ url_for('filter', field='intake_subtype',value='MANAGEAB') }}">Manageable</a>
     <a class="btn btn-primary btn-sm" href="{{ url_for('filter', field='intake_subtype',value='REHAB') }}">Rehabilitatable</a>
-  </p>
+  </p> -->
 
-  <p> Filter by Outcome Type:
+  <!-- <p> Filter by Outcome Type:
     <a class="btn btn-success btn-sm" href="{{ url_for('filter', field='outcome_type',value='ADOPTION') }}">Adoption</a>
     <a class="btn btn-success btn-sm" href="{{ url_for('filter', field='outcome_type',value='RTO') }}">Return to Owner</a>
     <a class="btn btn-success btn-sm" href="{{ url_for('filter', field='outcome_type',value='EUTH') }}">Euthanasia</a>
     <a class="btn btn-success btn-sm" href="{{ url_for('filter', field='outcome_type',value='FOSTER-VO') }}">Foster Volunteer</a>
-  </p>
-</div>
+  </p> -->
+<!-- </div> --> 
 
-  <hr>
+<hr>
+<!-- <div class="col-lg-9"></div>
   <table id="sc-table" class="table table-hover table-responsive">
     <thead>
       <tr>
         <th><label title="animal_id">animal id</label></th>
         <th><label title="intake_index"> intake index</label></th>
-        <th><label title="animal_type">animal type</label></th>
-        <th><label title="intake_type">intake type</label></th>
+        <th><label title="name">animal name</label></th>
+        <th><label title="datetime">datetime</label></th>
         <th><label title="intake_condition">intake condition</label></th>
         <th><label title="name">name</label></th>
         <th><label title="datetime">intake datetime</label></th>
@@ -98,13 +95,10 @@
         <th><label title="outcome_datetime">outcome datetime</label></th>
         <th><label title="outcome_type">outcome type</label></th>
         <th><label title="outcome subtype">outcome subtype</label></th>
-        <th><label title="outcome_date_of_birth">outcome_date_of_birth</label></th>
-        <th><label title="outcome_animal_id">outcome_animal_id</label></th>
-        <th><label title="outcome index">outcome index</label></th>
-        <th><label title="outcome name">outcome_name</label></th>
-        <th><label title="sex_upon_intake">sex_upon_intake</label></th>
-        <th><label title="sex_upon_outcome">sex_upon_outcome</label></th>
+        <th><label title="species">species</label></th>
+        <th><label title="outcome_date_of_birth">DOB</label></th>
       </tr>
     </thead>
   </table>
+</div> -->
 {% endblock %}

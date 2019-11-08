@@ -8,8 +8,10 @@ import numpy as np
 import pandas as pd
 from werkzeug.contrib.cache import SimpleCache
 import os
-cache = SimpleCache()
 from datetime import date
+cache = SimpleCache()
+
+
 oldcolors = {
     'Blue': '#1f77b4',
     'Orange': '#ff7f0e',
@@ -27,54 +29,58 @@ colors = {
 }
 
 def readSC(nrows=None):
+    df = None
+    plot_columns = None
 
     df = cache.get('animalDB')
     plot_columns = cache.get('animalCols')
 
     if (df is None) or (plot_columns is None):
-        plot_columns = ['intake_index', 'animal_id', 'name', 'datetime', 'monthyear', 'found_location',
-                 'intake_type', 'intake_condition', 'animal_type', 'sex_upon_intake',
-                 'age_upon_intake', 'breed', 'color','los', 'outcome_index',
-                 'outcome_animal_id', 'outcome_name', 'outcome_datetime', 'outcome_monthyear',
-                 'outcome_date_of_birth', 'outcome_type', 'outcome_subtype',
-                 'outcome_animal_type', 'sex_upon_outcome', 'age_upon_outcome',
-                 'outcome_breed', 'outcome_color']
-        if not os.path.exists('./data/animalsAAC.csv'):
-            print("[INFO]: animalsAAC.tsv does not exist...\n[INFO]: looking for other file extensions...")
-            if os.path.exists('data/animalsAAC.xls'):
-                print("[INFO]: animalsAAC.xls does exist...\n[INFO]: using this file...")
-                df = pd.read_excel('./data/animalsAAC.xls')
-                df.to_csv('./data/animalsAAC.tsv', sep='\t')
-                df.to_csv('./data/animalsAAC.csv')
-            elif os.path.exists('./data/animalsAAC.csv'):
-                print("[INFO]: animalsAAC.xls does not exist...\n[INFO]: using animalsAAC.csv file instead...")
-                df = pd.read_csv('./data/animalsAAC.csv')
-                df.to_csv('./data/animalsAAC.tsv', sep='\t')
-            else:
-                print("[Err]: No data in the directory: './data/' i.e. add the data file to ./data/animalsAAC.csv")
-        else:
-            df = pd.read_table('./data/animalsAAC.csv')
-
-        # df = pd.read_csv('./data/animalsAAC.csv')
-        # df = pd.read_excel('./data/animals.xls')
-        df.to_csv('./data/animalsAAC.tsv',sep='\t')
-
+        plot_columns = ['intake_index','animal_id','name','datetime','monthyear','found_location','intake_type','intake_condition','animal_type','sex_upon_intake','age_upon_intake','breed','color','outcome_index','outcome_animal_id','outcome_name','outcome_datetime','outcome_monthyear','outcome_date_of_birth','outcome_type','outcome_subtype','outcome_animal_type','sex_upon_outcome','age_upon_outcome','outcome_breed','outcome_color','los','days_old','species']
         df = pd.read_csv('./data/animalsAAC.csv')
         preprocess_shape = df.shape
         print(preprocess_shape)
+        if preprocess_shape[0] > 30000:
+            print('[WARN]: File contains many entries! loading time will suffer')
+            
 
-        value_to_check = pd.Timestamp(date.today().year, 1, 1)
-        df['datetime'] = [ pd.Timestamp(t) for t in df['datetime'] ]
-        filter_mask = df['datetime'] < value_to_check
-        df[filter_mask]
-        # df = df[df['datetime'] > pd.to_datetime('2017-01-01','%Y-%m-%d')]
-        df['name'] = unicode(df['name'].str.replace('*',''))
-        df['outcome_name'] = unicode(df['outcome_name'].str.replace('*',''))
+
+        outcome_dates_new = []
+        for i, outcome_date in enumerate(df['outcome_datetime']):
+            if outcome_date == '':
+                print('[INFO]: Outcome Datetime is and empty string')
+            elif outcome_date == None:
+                print('[INFO]: Outcome Datetime is None')
+            else:
+                # print('[INFO]: Outcome Datetime is neither empty or none')
+                pass
+
+        # value_to_check = pd.Timestamp(date.today().year, 1, 1)
+        # df['datetime'] = [ pd.Timestamp(t) for t in df['datetime'] ]
+        # filter_mask = df['datetime'] < value_to_check
+        # df[filter_mask]
+        df['datetime'] = pd.to_datetime(df['datetime'])
+        # df = df[(df['datetime'] > pd.to_datetime('2017-01-01','%Y-%m-%d'))]
+        df['name'] = str(df['name'].str.replace('*',''))
+        df['outcome_name'] = str(df['outcome_name'].str.replace('*',''))
+        df = df[(df.outcome_datetime != '')]
         cache.set('animalDB', df, timeout=5*60)
         cache.set('animalCols', plot_columns, timeout=5*60)
 
         if nrows is not None:
             return df.loc[:nrows-1, :], plot_columns
+
+    # outcome_dates_new = []
+    # for i, outcome_date in enumerate(df['outcome_datetime']):
+    #     print(outcome_date)
+    #     print(type(outcome_date))
+    #     if outcome_date == '':
+    #         print('[INFO]: Outcome Datetime is and empty string')
+    #     elif outcome_date == None:
+    #         print('[INFO]: Outcome Datetime is None')
+    #     else:
+    #         # print('[INFO]: Outcome Datetime is neither empty or none')
+    #         pass
 
     plot_columns = df.columns
 
