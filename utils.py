@@ -81,7 +81,9 @@ def readSC(nrows=None):
     #     else:
     #         # print('[INFO]: Outcome Datetime is neither empty or none')
     #         pass
-
+    
+    df['intake_date'] = pd.to_datetime(df['intake_date'])
+    df['outcome_date'] = pd.to_datetime(df['outcome_date'])
     plot_columns = df.columns
 
     return df, plot_columns

@@ -209,7 +209,6 @@ def plot_interactive_legend(df, columns):
     np.random.seed(965)
 
     # generate df
-    N = 100
     # N is number of days between min and max intake and outcome date
     df['intake_date'] = pd.to_datetime(df['intake_date'])
     df['outcome_date'] = pd.to_datetime(df['outcome_date'])
@@ -323,12 +322,15 @@ def plot_page_inventory(df, columns, request, field=None, value=None):
             if requested_col not in columns:
                 return redirect(url_for('sd'))
     else:
-        x, y = 'date', 'inventory'
+        x, y = 'date', 'daily count'
 
     if field and value is None:
         field = 'all fields'
         value = 'all values'
 
+
+    df['intake_date'] = pd.to_datetime(df['intake_date'])
+    df['outcome_date'] = pd.to_datetime(df['outcome_date'])
     nowtime = time.time()
     # current headers are:
     headers = list(df.columns.values)
@@ -354,8 +356,8 @@ def plot_page_inventory(df, columns, request, field=None, value=None):
     felinedf = df[(df.animal_type == "Cat") | (df.animal_type == "Kitten")]
     caninedf = df[(df.animal_type == "Dog") | (df.animal_type == "Puppy")]
 
-    dogmaxdate = dogdf['datetime'].max()
-    dogmindate = dogdf['outcome_datetime'].min()
+    dogmaxdate = dogdf['intake_date'].max()
+    dogmindate = dogdf['outcome_date'].min()
     daterange = pd.date_range(start=dogmindate, end=dogmaxdate)
     print("[INFO] Filtered by animal_type.")
     lasttime = nowtime
@@ -380,14 +382,14 @@ def plot_page_inventory(df, columns, request, field=None, value=None):
     # tsinvcanine = pd.Series(invcanine, index = daterange)
     # print dimensions of our pandas dataframe
     # print( np.shape(df) )
-    # print('\nCat Inventory: ' + str(np.shape(tsinvcat)) )
+    # print('\nCat Daily Count: ' + str(np.shape(tsinvcat)) )
     # print( '\nKitten Invenory: ' + str(np.shape(tsinvkitten)) )
 
-    # print( '\nDog Inventory: ' + str(np.shape(tsinvdog)) )
-    # print( '\nPuppy Inventory: ' + str(np.shape(tsinvpuppy)) )
+    # print( '\nDog Daily Count: ' + str(np.shape(tsinvdog)) )
+    # print( '\nPuppy Daily Count: ' + str(np.shape(tsinvpuppy)) )
 
-    # print( '\nFeline Inventory: ' + str(np.shape(tsinvfeline))+ "\n" )
-    # print( '\nCanine Inventory: ' + str(np.shape(tsinvcanine))+ "\n" )
+    # print( '\nFeline Daily Count: ' + str(np.shape(tsinvfeline))+ "\n" )
+    # print( '\nCanine Daily Count: ' + str(np.shape(tsinvcanine))+ "\n" )
 
     # # Does not work with NaN values!
     # tsinvcat = tsinvcat.loc[:, {x, y}].dropna(axis=0)
@@ -406,23 +408,23 @@ def plot_page_inventory(df, columns, request, field=None, value=None):
 
     ax[1, 0].set_xlabel(x)
     ax[1, 0].set_ylabel('dog ' + y)
-    ax[1, 0].set_title('Daily Inventory for {} of {}'.format(field, value))
+    ax[1, 0].set_title('Daily Dog Count for {} of {}'.format(field, value))
     ax[1, 0].grid(color='black', linestyle='-', linewidth=2)
 
 
     ax[1, 1].set_xlabel(x)
     ax[1, 1].set_ylabel('puppy ' + y)
-    ax[1, 1].set_title('Daily Inventory for {} of {}'.format(field, value))
+    ax[1, 1].set_title('Daily Puppy Count for {} of {}'.format(field, value))
     ax[1, 1].grid(color='black', linestyle='-', linewidth=2)
 
     ax[0, 0].set_ylabel('cat ' + y)
     ax[0, 0].set_xlabel(x)
-    ax[0, 0].set_title('Daily Inventory for {} of {}'.format(field, value))
+    ax[0, 0].set_title('Daily Cat Count for {} of {}'.format(field, value))
     ax[0, 0].grid(color='black', linestyle='-', linewidth=2)
 
     ax[0, 1].set_ylabel('kitten ' + y)
     ax[0, 1].set_xlabel(x)
-    ax[0, 1].set_title('Daily Inventory for {} of {}'.format(field, value))
+    ax[0, 1].set_title('Daily Kitten Count for {} of {}'.format(field, value))
     ax[0, 1].grid(color='black', linestyle='-', linewidth=2)
 
 
