@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, url_for, redirect, send_from_
 import os
 import json
 from utils import readSC, colors, table_convert
-from plots import plot_page_mpld3, plot_page_counts, plot_page_los, plot_page_inventory, detail_plot
+from plots import plot_page_mpld3, plot_page_counts, plot_page_los, plot_page_inventory, plot_interactive_legend, detail_plot
 
 import sqlite3
 from werkzeug.utils import secure_filename
@@ -10,6 +10,8 @@ from werkzeug import SharedDataMiddleware
 from flask import send_from_directory
 from flask import Request, session, g, abort, flash
 from time import localtime
+
+
 
 # ['index','animal_id','animal_type','sex','primary_bree','dob','secondary_','kennel_no','impound_no','intake_type','intake_subtype','intake_date','s_n_date','intake_cond','weight','weight_1_week','outcome_type','outcome_subtype','outcome_date','due_out_date','outcome_cond','location_1','location_1_date','location_2','location_2_date','behavior_cond','outcome_behavior_cond','euth_reason','intake_date_form_2']
 
@@ -492,6 +494,12 @@ def inventory_plot_filter():
     filterdf = df[df[str(field)] == value]
     # filterdfs = filterdf.sort_values('impound_no', ascending=False)  # [:50]  # TODO: Remove the slicing!
     return plot_page_inventory(filterdf, columns, request, field=field, value=value)
+
+
+@app.route('/interactive-legend/', methods=['GET','POST'])
+def interactive_legend_plot():
+    df, columns = readSC()
+    return plot_interactive_legend(df, columns)
 
 if __name__=='__main__':
     app.run(debug=True)

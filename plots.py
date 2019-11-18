@@ -18,6 +18,7 @@ import matplotlib.cm as cm
 import matplotlib.pyplot as plt; plt.rcdefaults()
 from mpld3 import fig_to_html, plugins
 import time
+import mpld3
 
 ss_intake = {
     'Mercury': [0.39, 4878],
@@ -49,7 +50,7 @@ def barchart_counts( dataf, headers, n, numvals=16):
     return fig
 
 def getdailyinventory( day, dataf ):
-    dayinventory = dataf[(dataf.datetime < day) & (dataf.outcome_datetime > day)]
+    dayinventory = dataf[(dataf['intake_date'] < day) & (dataf['outcome_date'] > day)]
     return len(dayinventory)
 
 # def dailyinventory( startdate, enddate, dataf ):
@@ -203,6 +204,75 @@ def plot_page_counts(df, columns, request, field=None, value=None, rows=None):
     plot = fig_to_html(fig)
     return render_template('plot_counts.html', plot=plot, columns=columns, rows=rows,
                            z=z)
+
+def plot_interactive_legend(df, columns):
+    np.random.seed(965)
+
+    # generate df
+    N = 100
+    # N is number of days between min and max intake and outcome date
+    df['intake_date'] = pd.to_datetime(df['intake_date'])
+    df['outcome_date'] = pd.to_datetime(df['outcome_date'])
+    max_in_date = pd.to_datetime(df['intake_date']).max()
+    min_in_date = pd.to_datetime(df['intake_date']).min()
+    # Days between two days 
+    N = (max_in_date - min_in_date).days
+    filter_field = 'animal_type'
+    cols_list = df[filter_field].value_counts().keys()
+    print(cols_list)
+    # cols_list = ['cats', 'dogs', 'kittens', 'puppies']
+    num_cols = len(cols_list)
+    # Create num_cols N length random tuples
+    data_input = (.1 * (np.random.random((N, num_cols)) - .5)).cumsum(0)
+    
+    # Create num_cols
+    split_df = []
+    for col in cols_list:
+        split_df.append(df[(df[filter_field]==col)])
+
+    daterange = pd.date_range(start=min_in_date, end=max_in_date)
+    data_input = []
+    for day in daterange:
+        day_data_input = []
+        for i, col in enumerate(cols_list):
+            
+            day_data_input.append(getdailyinventory(str(day),split_df[i]))
+        data_input.append(day_data_input)
+
+    dfplot = pd.DataFrame(data_input,
+                    columns=cols_list, index = daterange)
+
+    # plot line + confidence interval
+    fig, ax = plt.subplots()
+    ax.grid(True, alpha=0.3)
+
+    for key, val in dfplot.iteritems():
+        # l, = ax.plot(val.index, val.values, label=key)
+        l, = ax.plot_date(val.index, val.values,label=key)
+        ax.fill_between(val.index,
+                        val.values * .5, val.values * 1.5,
+                        color=l.get_color(), alpha=.4)
+
+    # define interactive legend
+
+    handles, labels = ax.get_legend_handles_labels() # return lines and labels
+    interactive_legend = plugins.InteractiveLegendPlugin(zip(handles,
+                                                            ax.collections),
+                                                        labels,
+                                                        alpha_unsel=0.5,
+                                                        alpha_over=1.5, 
+                                                        start_visible=True)
+    plugins.connect(fig, interactive_legend)
+
+    ax.set_xlabel('Days')
+    ax.set_ylabel('Animal Count')
+    ax.set_title('Daily Animal Count', size=20)
+    fig.figsize = [6.4, 4.8]
+    plot = fig_to_html(fig)
+    return render_template('plot_inter.html', plot=plot)
+
+
+
 
 def plot_page_los(df, columns, request, field=None, value=None, rows=None):
     if request.method == 'POST':  # Something is being submitted

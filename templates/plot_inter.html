@@ -1,0 +1,123 @@
+{% extends "template.html" %}
+
+{% block body %}
+
+<div class="col-lg-3">
+  <h3> choose custom filter: </h3>
+  <div class="input-group mb-2">
+    <form action="{{ url_for('linked_plot_filter') }}">
+      <input type="text" class="form-control" placeholder="i.e. animal_type" name="field" aria-label="field" aria-describedby="basic-addon1"><br>
+      <input type="text" class="form-control" placeholder="i.e. CAT" name="value" aria-label="value" aria-describedby="basic-addon2"><br>
+      <button class="btn btn-info btn-sm" type="submit">Submit</button>
+    </form>
+  </div>
+  <h3>Select your settings: </h3>
+  <form class="form-inline" name="color_button" method='POST'>
+
+    <div class="input-group">
+      <span class="input-group-addon"><label>x1</label></span>
+      <select name="x1">
+      {% for column in columns %}
+        {% if column == x1 %}
+          <option selected="selected">{{ x1 }}</option>
+        {% else %}
+          <option value="{{ column }}">{{ column }}</option>
+        {% endif %}
+      {% endfor %}
+    </select>
+    </div>
+    <br>
+    <div class="input-group">
+      <span class="input-group-addon"><label>x2</label></span>
+      <select name="x2">
+      {% for column in columns %}
+        {% if column == x2 %}
+          <option selected="selected">{{ x2 }}</option>
+        {% else %}
+          <option value="{{ column }}">{{ column }}</option>
+        {% endif %}
+      {% endfor %}
+    </select>
+    </div>
+    <br>
+    <div class="input-group">
+      <span class="input-group-addon"><label>y1</label></span>
+      <select name="y1">
+      {% for column in columns %}
+        {% if column == y1 %}
+          <option selected="selected">{{ y1 }}</option>
+        {% else %}
+          <option value="{{ column }}">{{ column }}</option>
+        {% endif %}
+      {% endfor %}
+    </select>
+    </div>
+    <br>
+    <div class="input-group">
+      <span class="input-group-addon"><label>y2</label></span>
+      <select name="y2">
+      {% for column in columns %}
+        {% if column == y2 %}
+          <option selected="selected">{{ y2 }}</option>
+        {% else %}
+          <option value="{{ column }}">{{ column }}</option>
+        {% endif %}
+      {% endfor %}
+    </select>
+    </div>
+    <br>
+    <div class="input-group">
+      <span class="input-group-addon"><label>z</label></span>
+      <select name="z">
+      {% for column in columns %}
+        {% if column == z %}
+          <option selected="selected">{{ z }}</option>
+        {% else %}
+          <option value="{{ column }}">{{ column }}</option>
+        {% endif %}
+      {% endfor %}
+    </select>
+    </div>
+    <br>
+    <button class="btn btn-info btn-sm" type="submit">Submit</button>
+  </form>
+  <br>
+</div>
+
+<div class="col-lg-9">
+  <h1>Linked</h1>
+
+  <p> Filter by Animal Type:
+    <a class="btn btn-info btn-sm" href="{{ url_for('linked_plot_filter', field='animal_type',value='Cat') }}">Cats</a>
+    <a class="btn btn-info btn-sm" href="{{ url_for('linked_plot_filter', field='animal_type',value='Dog') }}">Dogs</a>
+    <!-- <a class="btn btn-info btn-sm" href="{{ url_for('linked_plot_filter', field='animal_type',value='KITTEN') }}">Kittens</a>
+    <a class="btn btn-info btn-sm" href="{{ url_for('linked_plot_filter', field='animal_type',value='PUPPY') }}">Puppies</a> -->
+  </p>
+<!-- 
+  <p> Filter by Intake Sub-Type:
+    <a class="btn btn-primary btn-sm" href="{{ url_for('linked_plot_filter', field='intake_subtype',value='HEALTHY') }}">Healthy</a>
+    <a class="btn btn-primary btn-sm" href="{{ url_for('linked_plot_filter', field='intake_subtype',value='UNHEALTH') }}">Unhealthy</a>
+    <a class="btn btn-primary btn-sm" href="{{ url_for('linked_plot_filter', field='intake_subtype',value='MANAGEAB') }}">Manageable</a>
+    <a class="btn btn-primary btn-sm" href="{{ url_for('linked_plot_filter', field='intake_subtype',value='REHAB') }}">Rehabilitatable</a>
+  </p> -->
+
+  <p> Filter by Outcome Type:
+    <a class="btn btn-success btn-sm" href="{{ url_for('linked_plot_filter', field='outcome_type',value='Adoption') }}">Adoption</a>
+    <a class="btn btn-success btn-sm" href="{{ url_for('linked_plot_filter', field='outcome_type',value='Returned to Owner') }}">Return to Owner</a>
+    <a class="btn btn-success btn-sm" href="{{ url_for('linked_plot_filter', field='outcome_type',value='Euthanasia') }}">Euthanasia</a>
+    <a class="btn btn-success btn-sm" href="{{ url_for('linked_plot_filter', field='outcome_type',value='Transfer') }}">Transfer</a>
+  </p>
+
+  <p> Filter by Intake Type:
+    <a class="btn btn-warning btn-sm" href="{{ url_for('linked_plot_filter', field='intake_type',value='Stray') }}">Stray</a>
+    <a class="btn btn-warning btn-sm" href="{{ url_for('linked_plot_filter', field='intake_type',value='Transfer') }}">Transfer</a>
+    <a class="btn btn-warning btn-sm" href="{{ url_for('linked_plot_filter', field='intake_type',value='Euthanasia Request') }}">Euthanasia Request</a>
+  </p>
+  <hr>
+</div>
+
+<div class="col-lg-5">
+{{ plot|safe }}
+</div>
+
+{% endblock %}

@@ -11,15 +11,18 @@
     {% for row in rows %}
         data.push([
           unescape('<a target="_blank" href="/animal_id/{{ row['animal_id'] }}"><b>{{ row['animal_id'] }}</b></a>'),
-          "{{ row['datetime']}}",
+          "{{ row['breed'] }}",
           "{{ row['species'] }}",
+          "{{ row['sex_upon_intake'] }}",
           "{{ row['intake_type'] }}",
           "{{ row['intake_condition'] }}",
+          "{{ row['datetime']}}",
           "{{ row['outcome_type'] }}",
           "{{ row['outcome_subtype'] }}",
           "{{ row['outcome_color']}}",
           "{{ row['outcome_datetime']}}",
           "{{ row['los']}}",
+          "{{ row['los_group']}}",    
           "{{ row['days_old']}}",
           "{{ row['found_location']}}",
           "{{ row['age_upon_outcome']}}"
@@ -89,27 +92,27 @@
 </div>
 
 <hr>
-<div class="col-lg-7"></div>
-  <hr>
-  <table id="sc-table" class="table table-hover table-responsive">
-    <thead>
-      <tr>
-        <th><label title="animal_id">Animal ID</label></th>
-        <th><label title="datetime">Intake Date</label></th>
-        <th><label title="species">Species</label></th>
-        <th><label title="intake_type">Intake Type</label></th>
-        <th><label title="intake_condition">Intake Condition</label></th>
-        <th><label title="outcome_type">Outcome Type</label></th>
-        <th><label title="outcome_subtype">Outcome Subtype</label></th>
-        <th><label title="outcome_color">Color</label></th>
-        <th><label title="outcome_datetime">Outcome Date</label></th>
-        <th><label title="los">Length of Stay</label></th>
-        <th><label title="days_old">Days Old</label></th>
-        <th><label title="found_location">Found Location</label></th>
-        <th><label title="age_upon_outcome">Age at Outcome</label></th>
-      </tr>
-    </thead>
-  </table>
-</div>
+<table id="sc-table" class="table table-hover table-responsive">
+<thead>
+    <tr>
+    <th><label title="animal_id">Animal ID</label></th>
+    <th><label title="breed">Breed</label></th>
+    <th><label title="species">Animal Type</label></th>
+    <th><label title="sex_upon_intake">Gender</label></th>
+    <th><label title="intake_type">Intake Type</label></th>
+    <th><label title="intake_condition">Intake Condition</label></th>
+    <th><label title="datetime">Intake Date</label></th>
+    <th><label title="outcome_type">Outcome Type</label></th>
+    <th><label title="outcome_subtype">Outcome Subtype</label></th>
+    <th><label title="outcome_color">Color</label></th>
+    <th><label title="outcome_datetime">Outcome Date</label></th>
+    <th><label title="los">Length of Stay</label></th>
+    <th><label title="los_group">LOS Group</label></th>
+    <th><label title="days_old">Days Old</label></th>
+    <th><label title="found_location">Found Location</label></th>
+    <th><label title="age_upon_outcome">Age at Outcome</label></th>
+    </tr>
+</thead>
+</table>
 
 {% endblock %}
